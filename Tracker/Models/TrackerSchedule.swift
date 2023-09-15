@@ -8,8 +8,11 @@
 import Foundation
 
 enum TrackerSchedule: String {
-case Daily = "Ежедневно"
-case Weekly = "Еженедельно"
-case Monthly = "Ежемесячно"
-case Yearly = "Ежегодно"
+    case Monday = "Понедельник"
+    case Tuersday = "Вторник"
+    case Wednesday = "Среда"
+    case Thursday = "Четверг"
+    case Friday = "Пятница"
+    case Saturday = "Суббота"
+    case Sunday = "Воскресенье"
 }

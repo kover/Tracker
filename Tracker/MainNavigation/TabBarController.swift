@@ -8,22 +8,40 @@
 import UIKit
 
 class TabBarController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        configureTabs()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    private func configureTabs() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        let trackersViewController = storyboard.instantiateViewController(withIdentifier: "TrackersViewController")
+        let statisticsViewController = storyboard.instantiateViewController(withIdentifier: "StatisticsViewController")
+        
+        guard
+            let trackersViewController = trackersViewController as? TrackersViewController,
+            let statisticsViewController = statisticsViewController as? StatisticsViewController
+        else {
+            return
+        }
+        
+        trackersViewController.navigationItem.title = "Трекеры"
+        
+        let trackersNavigation = UINavigationController()
+        trackersNavigation.navigationBar.prefersLargeTitles = true
+        trackersNavigation.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "Trackers"), selectedImage: nil)
+        trackersNavigation.viewControllers = [trackersViewController]
+        
+        statisticsViewController.navigationItem.title = "Статистика"
+        
+        let statisticsNavigation = UINavigationController()
+        statisticsNavigation.navigationBar.prefersLargeTitles = true
+        statisticsNavigation.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "Statistics"), selectedImage: nil)
+        statisticsNavigation.viewControllers = [statisticsViewController]
+        
+        self.viewControllers = [trackersNavigation, statisticsNavigation]
     }
-    */
-
+    
 }
