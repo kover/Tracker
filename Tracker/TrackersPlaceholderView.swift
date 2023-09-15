@@ -9,20 +9,26 @@ import UIKit
 
 class TrackersPlaceholderView: UIView {
     
+    private var label: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.text = "Placeholder"
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = UIColor(named: "Black")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private var imageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "TrackersPlaceholder"))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let imageView = UIImageView(image: UIImage(named: "TrackersPlaceholder"))
-        
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(imageView)
         
-        let label = UILabel(frame: .zero)
-        label.text = "Что будем отслеживать?"
-        label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = UIColor(named: "Black")
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(label)
         
         NSLayoutConstraint.activate([
@@ -31,6 +37,11 @@ class TrackersPlaceholderView: UIView {
             label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8)
         ])
+    }
+    
+    convenience init(placeholderText: String, frame: CGRect) {
+        self.init(frame: frame)
+        self.label.text = placeholderText
     }
     
     required init?(coder: NSCoder) {

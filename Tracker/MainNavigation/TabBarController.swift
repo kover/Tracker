@@ -16,16 +16,12 @@ class TabBarController: UITabBarController {
     }
     
     private func configureTabs() {
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        let trackersViewController = storyboard.instantiateViewController(withIdentifier: "TrackersViewController")
-        let statisticsViewController = storyboard.instantiateViewController(withIdentifier: "StatisticsViewController")
+        view.backgroundColor = UIColor(named: "White")
+        tabBar.layer.borderColor = UIColor(named: "Black")?.cgColor
+        tabBar.layer.borderWidth = 0.2
         
-        guard
-            let trackersViewController = trackersViewController as? TrackersViewController,
-            let statisticsViewController = statisticsViewController as? StatisticsViewController
-        else {
-            return
-        }
+        let trackersViewController = TrackersViewController()
+        let statisticsViewController = StatisticsViewController()
         
         trackersViewController.navigationItem.title = "Трекеры"
         

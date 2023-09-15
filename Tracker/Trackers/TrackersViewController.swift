@@ -9,12 +9,31 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+    private let createTrackerSegueIdentifier = "CreateTrackerSegue"
     
-    private var searchTextField: UISearchTextField!
-    private var collectionView: UICollectionView!
+    private var searchTextField: UISearchTextField = {
+        let searchTextField = UISearchTextField(frame: .zero)
+        searchTextField.placeholder = "Поиск"
+        
+        searchTextField.translatesAutoresizingMaskIntoConstraints = false
+        
+        return searchTextField
+    }()
+    
+    private var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        collectionView.register(TrackersCollectionViewCell.self, forCellWithReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier)
+        
+        return collectionView
+    }()
+    
+    // MARK: - Data structures
+    private var categories: [TrackerCategory] = []
+    private var completedTrackers: [TrackerRecord] = []
+    private var visibleCategories: [TrackerCategory] = [TrackerCategory(title: "Hello", trackers: [Tracker(id: 1, name: "Test tracker with very very very very very very long name", color: .red, emoji: "😀", schedule: [.Friday]), Tracker(id: 2, name: "Test tracker", color: .red, emoji: "🍏", schedule: [.Friday])])]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +49,7 @@ final class TrackersViewController: UIViewController {
         let addHabbitButton = UIBarButtonItem(
             barButtonSystemItem: .add,
             target: self,
-            action: #selector(TrackersViewController.addHabbit)
+            action: #selector(createTracker)
         )
         addHabbitButton.tintColor = UIColor(named: "Black")
         
@@ -46,10 +65,6 @@ final class TrackersViewController: UIViewController {
     }
     
     private func configureSearch() {
-        let searchTextField = UISearchTextField(frame: .zero)
-        searchTextField.placeholder = "Поиск"
-        
-        searchTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchTextField)
         
         NSLayoutConstraint.activate([
@@ -57,14 +72,11 @@ final class TrackersViewController: UIViewController {
             searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-        
-        self.searchTextField = searchTextField
     }
     
     private func configureCollection() {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
@@ -73,12 +85,10 @@ final class TrackersViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-        
-        self.collectionView = collectionView
     }
     
     private func showPlaceholder() {
-        let placeholder = TrackersPlaceholderView()
+        let placeholder = TrackersPlaceholderView(placeholderText: "Что будем отслеживать?", frame: .zero)
         
         placeholder.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(placeholder)
@@ -89,8 +99,46 @@ final class TrackersViewController: UIViewController {
         ])
     }
 
-    @objc func addHabbit() {
+    @objc func createTracker() {
+        let createTrackerViewController = CreateTrackerViewController()
+        let navigationController = UINavigationController()
+        navigationController.viewControllers = [createTrackerViewController]
+        present(navigationController, animated: true)
+    }
+}
+// MARK: - UICollectionViewDataSource
+extension TrackersViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return visibleCategories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return visibleCategories[section].trackers.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, for: indexPath) as? TrackersCollectionViewCell else {
+            return TrackersCollectionViewCell()
+        }
         
+        let item = visibleCategories[indexPath.section].trackers[indexPath.row]
+        
+        trackerCell.configureCell(emoji: item.emoji, title: item.name, counter: 1, completed: false, color: item.color)
+        return trackerCell
+    }
+}
+// MARK: - UICollectionViewDelegateFlowLayout
+extension TrackersViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: (collectionView.bounds.width - 32 - 9) / 2, height: 192)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 9
     }
 }
 
