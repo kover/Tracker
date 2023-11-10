@@ -8,6 +8,8 @@
 import UIKit
 
 class CreateTrackerViewController: UIViewController {
+    
+    weak var delegate: CreateHabbitViewControllerDelegate?
 
     private lazy var createHabitButton: UIButton = {
         let button = UIButton()
@@ -17,6 +19,7 @@ class CreateTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(createHabbit), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
         button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
         
         return button
     }()
@@ -29,6 +32,7 @@ class CreateTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(createIrregularEvent), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
         button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
         
         return button
     }()
@@ -43,6 +47,14 @@ class CreateTrackerViewController: UIViewController {
     @objc func createHabbit() {
         let createHabbitViewController = CreateHabbitViewController()
         createHabbitViewController.title = "Новая привычка"
+        createHabbitViewController.delegate = delegate
+        createHabbitViewController.cells = [
+            0: ["textField"],
+            1: ["category","shedule"],
+            2: ["emoji"],
+            3: ["colors"]
+        ]
+
         
         let navigationController = UINavigationController()
         navigationController.viewControllers = [createHabbitViewController]
@@ -51,6 +63,21 @@ class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createIrregularEvent() {
+        let createHabbitViewController = CreateHabbitViewController()
+        createHabbitViewController.title = "Новая нерегулярное событие"
+        createHabbitViewController.delegate = delegate
+        createHabbitViewController.cells = [
+            0: ["textField"],
+            1: ["category"],
+            2: ["emoji"],
+            3: ["colors"]
+        ]
+
+        
+        let navigationController = UINavigationController()
+        navigationController.viewControllers = [createHabbitViewController]
+
+        present(navigationController, animated: true)
     }
     
     private func configureViews() {
