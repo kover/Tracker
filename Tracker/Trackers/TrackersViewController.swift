@@ -158,16 +158,39 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
 // MARK: - TrackersCollectionViewCellDelegate
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else {
+        guard
+            let indexPath = collectionView.indexPath(for: cell),
+            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date))
+        else {
             return
         }
         if isCompleted {
-            completedTrackers = completedTrackers + [TrackerRecord(tracker: tracker, date: Date())]
+            completedTrackers = completedTrackers + [TrackerRecord(tracker: tracker, date: date)]
         } else {
-            completedTrackers = completedTrackers.filter { $0.tracker.id != tracker.id }
+            completedTrackers = completedTrackers.filter { $0.tracker.id != tracker.id || $0.tracker.id == tracker.id && $0.date.compare(date) != .orderedSame }
         }
         
         collectionView.reloadItems(at: [indexPath])
+    }
+}
+// MARK: - UITextFieldDelegate
+extension TrackersViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let text = textField.text,
+           let textRange = Range(range, in: text) {
+            
+            let predicate = text.replacingCharacters(in: textRange, with: string)
+            if predicate == "" {
+                trackersForSelectedDate()
+            } else {
+                trackersByPredicate(predicate)
+            }
+        }
+        return true;
+    }
+    
+    override func resignFirstResponder() -> Bool {
+        return true
     }
 }
 // MARK: - Private routines & layout
@@ -201,12 +224,14 @@ private extension TrackersViewController {
     }
     
     private func configureSearch() {
+        searchTextField.delegate = self
         view.addSubview(searchTextField)
         
         NSLayoutConstraint.activate([
             searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            searchTextField.heightAnchor.constraint(equalToConstant: 36)
         ])
     }
     
@@ -260,6 +285,27 @@ private extension TrackersViewController {
         togglePlaceholder()
     }
     
+    func trackersByPredicate(_ predicate: String) {
+        let newText = predicate.lowercased()
+        
+        visibleCategories = categories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                let filterTextField = newText.isEmpty || tracker.name.lowercased().contains(newText)
+                
+                return filterTextField
+            }
+            
+            if trackers.isEmpty {
+                return nil
+            }
+            
+            return TrackerCategory(title: category.title, trackers: trackers)
+        }
+        
+        collectionView.reloadData()
+        togglePlaceholder()
+    }
+    
     func calculateCompletion(id: UUID) -> Int {
         return completedTrackers.reduce(0) { partialResult, record in
             if record.tracker.id == id {
@@ -270,8 +316,10 @@ private extension TrackersViewController {
     }
     
     func isTrackerCompletedToday(tracker: Tracker) -> Bool {
-        let calendar = Calendar.current
-        return completedTrackers.contains { calendar.compare($0.date, to: datePicker.date, toGranularity: .day) == .orderedSame && $0.tracker.id == tracker.id }
+        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date)) else {
+            return false
+        }
+        return completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
     }
 
 }

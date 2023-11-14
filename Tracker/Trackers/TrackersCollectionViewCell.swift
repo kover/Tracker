@@ -166,13 +166,15 @@ private extension TrackersCollectionViewCell {
     }
     
     @objc private func checkButtonTap() {
-        guard let tracker = tracker, let selectedDate = selectedDate else {
+        guard 
+            let tracker = tracker,
+            let selectedDate = selectedDate,
+            let currentDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: Date()))
+        else {
             return
         }
         
-        let currentDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: Date()))
-        
-        if currentDate != selectedDate {
+        if selectedDate > currentDate {
             return
         }
         
