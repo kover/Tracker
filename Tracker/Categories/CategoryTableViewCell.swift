@@ -7,10 +7,11 @@
 
 import UIKit
 
-class CategoryTableViewCell: UITableViewCell {
+final class CategoryTableViewCell: UITableViewCell {
     
     static let categoryTableViewCellIdentifier = "categoryTableViewCell"
 
+    // MARK: - Layout items
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         
@@ -21,6 +22,7 @@ class CategoryTableViewCell: UITableViewCell {
         
         return label
     }()
+
     private lazy var checkImageView: UIImageView = {
         let image = UIImage(systemName: "checkmark")
         
@@ -38,9 +40,18 @@ class CategoryTableViewCell: UITableViewCell {
         
         contentView.backgroundColor = UIColor(named: "Background")
         
+        setupSubviews()
+        setupLayout()
+    }
+}
+// MARK: - Layout configuration
+private extension CategoryTableViewCell {
+    func setupSubviews() {
         contentView.addSubview(nameLabel)
         contentView.addSubview(checkImageView)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             nameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

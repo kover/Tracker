@@ -11,13 +11,14 @@ protocol SelectCategoryDelegate: AnyObject {
     func updateCategory(category: TrackerCategory)
 }
 
-class ListCategoriesViewController: UIViewController {
+final class ListCategoriesViewController: UIViewController {
 
     weak var delegate: SelectCategoryDelegate?
     
     private let categoryStore = CategoryStore.shared
     private var categories: [TrackerCategory] = []
     
+    // MARK: - Layout items
     private lazy var placeholderImageView: UIImageView = {
         let image = UIImage(named: "TrackersPlaceholder")
         
@@ -71,16 +72,18 @@ class ListCategoriesViewController: UIViewController {
         return tableView
     }()
     
-    //MARK: - Lyfecycle
+    //MARK: - Lyfecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
         
         categories = getCategories()
-        setupView()
+        
+        setupSubviews()
+        setupLayout()
     }
 }
 
-//MARK: - CreateNewCategoryDelegate
+//MARK: - CreateCategoryDelegate
 extension ListCategoriesViewController: CreateCategoryDelegate {
     func createCategory(category: String) {
         categoryStore.addCategory(category: TrackerCategory(title: category, trackers: []))
@@ -127,9 +130,9 @@ extension ListCategoriesViewController: UITableViewDelegate {
     }
 }
 
-//MARK: - Private routines
+//MARK: - Private routines & layout
 private extension ListCategoriesViewController {
-    func setupView() {
+    func setupSubviews() {
         view.backgroundColor = UIColor(named: "White")
         
         navigationItem.title = "Категории"
@@ -141,7 +144,9 @@ private extension ListCategoriesViewController {
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderLabel)
         view.addSubview(addCateroryButton)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             categoryTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             categoryTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

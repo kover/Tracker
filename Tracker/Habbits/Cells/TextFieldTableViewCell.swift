@@ -11,11 +11,12 @@ protocol TextFieldTableViewCellDelegate: AnyObject {
     func setHabbitName(with name: String?)
 }
 
-class TextFieldTableViewCell: UITableViewCell {
+final class TextFieldTableViewCell: UITableViewCell {
     static let textFieldTableViewCellIdentifier = "textFieldTableViewCell"
     
     weak var delegate: TextFieldTableViewCellDelegate?
     
+    // MARK: - Layout items
     private lazy var nameTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -34,19 +35,12 @@ class TextFieldTableViewCell: UITableViewCell {
     func setupCell() {
         selectionStyle = .none
         
-        contentView.backgroundColor = UIColor(named: "Background")
-        contentView.addSubview(nameTextField)
-        
-        NSLayoutConstraint.activate([
-            nameTextField.topAnchor.constraint(equalTo: contentView.topAnchor),
-            nameTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            nameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            nameTextField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
+        setupSubviews()
+        setupLayout()
     }
 }
 
-//MARK: - UITextFieldDelegate
+// MARK: - UITextFieldDelegate
 extension TextFieldTableViewCell: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let maxLength = 38
@@ -71,5 +65,22 @@ extension TextFieldTableViewCell: UITextFieldDelegate {
         textField.resignFirstResponder()
         
         return true
+    }
+}
+
+// MARK: - Layout configuration
+private extension TextFieldTableViewCell {
+    func setupSubviews() {
+        contentView.backgroundColor = UIColor(named: "Background")
+        contentView.addSubview(nameTextField)
+    }
+    
+    func setupLayout() {
+        NSLayoutConstraint.activate([
+            nameTextField.topAnchor.constraint(equalTo: contentView.topAnchor),
+            nameTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            nameTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            nameTextField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
     }
 }

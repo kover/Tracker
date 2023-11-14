@@ -13,7 +13,7 @@ protocol ScheduleTableViewCellDelegate: AnyObject {
     func removeSchedule(dayName: TrackerSchedule)
 }
 
-class ScheduleTableViewCell: UITableViewCell {
+final class ScheduleTableViewCell: UITableViewCell {
     
     static let scheduleTableViewCellIdentifier = "scheduleTableViewCell"
 
@@ -21,6 +21,7 @@ class ScheduleTableViewCell: UITableViewCell {
     
     private var schedule: TrackerSchedule?
     
+    // MARK: - Layout items
     private lazy var scheduleNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -50,9 +51,19 @@ class ScheduleTableViewCell: UITableViewCell {
         
         contentView.backgroundColor = UIColor(named: "Background")
         
+        setupSubviews()
+        setupLayout()
+    }
+}
+
+//MARK: - Private routines & layout
+private extension ScheduleTableViewCell {
+    func setupSubviews() {
         contentView.addSubview(scheduleNameLabel)
         contentView.addSubview(selectionToggleSwitch)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             scheduleNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             scheduleNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -62,10 +73,6 @@ class ScheduleTableViewCell: UITableViewCell {
             selectionToggleSwitch.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
-}
-
-//MARK: - Private routines
-private extension ScheduleTableViewCell {
     
     @objc func toggleSwitch(_ sender : UISwitch) {
         guard let schedule = schedule,

@@ -11,13 +11,14 @@ protocol SelectScheduleDelegate: AnyObject {
     func selectSchedule(schedule: [TrackerSchedule])
 }
 
-class ScheduleViewController: UIViewController {
+final class ScheduleViewController: UIViewController {
 
     weak var delegate: SelectScheduleDelegate?
     var schedule: [TrackerSchedule]?
     private var everyday = TrackerSchedule.allCases
     private var selectedDays: [TrackerSchedule] = []
 
+    // MARK: - Layout items
     private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -45,6 +46,7 @@ class ScheduleViewController: UIViewController {
         return tableView
     }()
     
+    // MARK: - Lifecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -58,20 +60,8 @@ class ScheduleViewController: UIViewController {
         
         sheduleTableView.register(ScheduleTableViewCell.self, forCellReuseIdentifier: ScheduleTableViewCell.scheduleTableViewCellIdentifier)
         
-        view.addSubview(doneButton)
-        view.addSubview(sheduleTableView)
-        
-        NSLayoutConstraint.activate([
-            sheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            sheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            sheduleTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor),
-            
-            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            doneButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            doneButton.heightAnchor.constraint(equalToConstant: 60)
-        ])
+        setupSubviews()
+        setupLayout()
     }
 }
 
@@ -116,8 +106,27 @@ extension ScheduleViewController: ScheduleTableViewCellDelegate {
     }
 }
 
-//MARK: - Private routines
+//MARK: - Private routines & layout
 private extension ScheduleViewController {
+    func setupSubviews() {
+        view.addSubview(doneButton)
+        view.addSubview(sheduleTableView)
+    }
+    
+    func setupLayout() {
+        NSLayoutConstraint.activate([
+            sheduleTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sheduleTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sheduleTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            sheduleTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor),
+            
+            doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            doneButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
+            doneButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
+    }
+    
     @objc func done() {
         guard let delegate = delegate else { return }
         delegate.selectSchedule(schedule: selectedDays)

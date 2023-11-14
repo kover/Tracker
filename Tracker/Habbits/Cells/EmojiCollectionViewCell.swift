@@ -11,6 +11,7 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
     
     static let emociCollectionViewCellIdentifier = "emojiCollectionViewCell"
 
+    // MARK: - Layout iems
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -27,8 +28,18 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = 16
         layer.masksToBounds = true
         
+        setupSubviews()
+        setupLayout()
+    }
+}
+
+// MARK: - Layout configuration
+private extension EmojiCollectionViewCell {
+    func setupSubviews() {
         addSubview(emojiLabel)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             emojiLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             emojiLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
@@ -37,4 +48,3 @@ final class EmojiCollectionViewCell: UICollectionViewCell {
         ])
     }
 }
-

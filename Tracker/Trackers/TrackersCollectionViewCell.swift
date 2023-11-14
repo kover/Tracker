@@ -11,7 +11,7 @@ protocol TrackersCollectionViewCellDelegate: AnyObject {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell)
 }
 
-class TrackersCollectionViewCell: UICollectionViewCell {
+final class TrackersCollectionViewCell: UICollectionViewCell {
     static let trackersCollectionViewCellIdentifier = "TrackersCollectionViewCell"
     
     weak var delegate: TrackersCollectionViewCellDelegate?
@@ -21,6 +21,7 @@ class TrackersCollectionViewCell: UICollectionViewCell {
     private var selectedDate: Date?
     private var tracker: Tracker?
     
+    // MARK: - Layout items
     private let colorView: UIView = {
         let view = UIView()
         
@@ -31,6 +32,16 @@ class TrackersCollectionViewCell: UICollectionViewCell {
     
         
         return view
+    }()
+    
+    private let emojiWrapper: UIView = {
+        let emoji = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 24, height: 24)))
+        emoji.layer.cornerRadius = 12
+        emoji.layer.masksToBounds = true
+        emoji.backgroundColor = UIColor(named: "Background")
+        emoji.translatesAutoresizingMaskIntoConstraints = false
+            
+        return emoji
     }()
     
     private let emojiLabel: UILabel = {
@@ -76,44 +87,12 @@ class TrackersCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    // MARK: - Lifecycle hooks
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let emojiHolder = createEmojiHolder()
-        colorView.addSubview(emojiHolder)
-        colorView.addSubview(titleLabel)
-        
-        contentView.addSubview(colorView)
-        
-        contentView.addSubview(checkTrackerButton)
-        
-        contentView.addSubview(quantityLabel)
-        
-        NSLayoutConstraint.activate([
-            colorView.heightAnchor.constraint(equalToConstant: 90),
-            colorView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-            emojiHolder.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
-            emojiHolder.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
-            emojiHolder.widthAnchor.constraint(equalToConstant: 24),
-            emojiHolder.heightAnchor.constraint(equalToConstant: 24),
-            
-            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiHolder.bottomAnchor, constant: 8),
-            titleLabel.bottomAnchor.constraint(equalTo: colorView.bottomAnchor, constant: -12),
-            titleLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
-            titleLabel.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
-            
-            checkTrackerButton.widthAnchor.constraint(equalToConstant: 34),
-            checkTrackerButton.heightAnchor.constraint(equalToConstant: 34),
-            checkTrackerButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            checkTrackerButton.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 8),
-            
-            quantityLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            quantityLabel.centerYAnchor.constraint(equalTo: checkTrackerButton.centerYAnchor),
-            quantityLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkTrackerButton.leadingAnchor, constant: -8)
-        ])
+        setupSubviews()
+        setupLayout()
         
         checkTrackerButton.addTarget(self, action: #selector(checkButtonTap), for: .touchUpInside)
     }
@@ -134,24 +113,7 @@ class TrackersCollectionViewCell: UICollectionViewCell {
         
         updateCheckTrackerButton()
     }
-    
-    private func createEmojiHolder() -> UIView {
-        let emoji = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 24, height: 24)))
-        emoji.layer.cornerRadius = 12
-        emoji.layer.masksToBounds = true
-        emoji.backgroundColor = UIColor(named: "Background")
-        emoji.translatesAutoresizingMaskIntoConstraints = false
-            
-        emoji.addSubview(emojiLabel)
         
-        NSLayoutConstraint.activate([
-            emojiLabel.centerXAnchor.constraint(equalTo: emoji.centerXAnchor),
-            emojiLabel.centerYAnchor.constraint(equalTo: emoji.centerYAnchor)
-        ])
-            
-        return emoji
-    }
-    
     private func createQuantityManagementView() -> UIView {
         let quantityManagementView = UIView(frame: .zero)
         
@@ -160,8 +122,49 @@ class TrackersCollectionViewCell: UICollectionViewCell {
         return quantityManagementView
     }
 }
-// MARK: - Private routines
+// MARK: - Private routines & layoute
 private extension TrackersCollectionViewCell {
+    func setupSubviews() {
+        emojiWrapper.addSubview(emojiLabel)
+        colorView.addSubview(emojiWrapper)
+        colorView.addSubview(titleLabel)
+        
+        contentView.addSubview(colorView)
+        contentView.addSubview(checkTrackerButton)
+        contentView.addSubview(quantityLabel)
+    }
+    
+    func setupLayout() {
+        NSLayoutConstraint.activate([
+            colorView.heightAnchor.constraint(equalToConstant: 90),
+            colorView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            emojiLabel.centerXAnchor.constraint(equalTo: emojiWrapper.centerXAnchor),
+            emojiLabel.centerYAnchor.constraint(equalTo: emojiWrapper.centerYAnchor),
+            
+            emojiWrapper.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            emojiWrapper.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            emojiWrapper.widthAnchor.constraint(equalToConstant: 24),
+            emojiWrapper.heightAnchor.constraint(equalToConstant: 24),
+            
+            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiWrapper.bottomAnchor, constant: 8),
+            titleLabel.bottomAnchor.constraint(equalTo: colorView.bottomAnchor, constant: -12),
+            titleLabel.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -12),
+            
+            checkTrackerButton.widthAnchor.constraint(equalToConstant: 34),
+            checkTrackerButton.heightAnchor.constraint(equalToConstant: 34),
+            checkTrackerButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            checkTrackerButton.topAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 8),
+            
+            quantityLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            quantityLabel.centerYAnchor.constraint(equalTo: checkTrackerButton.centerYAnchor),
+            quantityLabel.trailingAnchor.constraint(lessThanOrEqualTo: checkTrackerButton.leadingAnchor, constant: -8)
+        ])
+    }
+    
     @objc private func checkButtonTap() {
         guard let tracker = tracker, let selectedDate = selectedDate else {
             return

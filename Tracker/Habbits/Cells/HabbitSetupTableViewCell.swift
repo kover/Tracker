@@ -7,10 +7,11 @@
 
 import UIKit
 
-class HabbitSetupTableViewCell: UITableViewCell {
+final class HabbitSetupTableViewCell: UITableViewCell {
     
     static let habbitSetupTableViewCellIdentifier = "habbitSetupTableViewCellIdentifier"
     
+    // MARK: - Layout items
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -59,12 +60,27 @@ class HabbitSetupTableViewCell: UITableViewCell {
     func setupCell(text: String, description: String?) {
         contentView.backgroundColor = UIColor(named: "Background")
         
+        setupSubviews()
+        setupLayout()
+        
+        titleLabel.text = text
+        
+        if let description = description {
+            descriptionLabel.text = description
+        }
+    }
+}
+// MARK: - Layout configuration
+private extension HabbitSetupTableViewCell {
+    func setupSubviews() {
         contentView.addSubview(stackView)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(descriptionLabel)
         
         contentView.addSubview(accessoryImageView)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -75,11 +91,5 @@ class HabbitSetupTableViewCell: UITableViewCell {
             accessoryImageView.heightAnchor.constraint(equalToConstant: 12),
             accessoryImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
-        
-        titleLabel.text = text
-        
-        if let description = description {
-            descriptionLabel.text = description
-        }
     }
 }

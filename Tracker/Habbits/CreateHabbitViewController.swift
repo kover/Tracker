@@ -17,7 +17,7 @@ protocol CreateHabbitViewControllerDelegate: AnyObject {
     )
 }
 
-class CreateHabbitViewController: UIViewController {
+final class CreateHabbitViewController: UIViewController {
     
     private var category: TrackerCategory?
     private var schedule: [TrackerSchedule]?
@@ -28,6 +28,7 @@ class CreateHabbitViewController: UIViewController {
     weak var delegate: CreateHabbitViewControllerDelegate?
     var cells: Dictionary<Int, [String]>?
     
+    // MARK: - Layout items
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -249,23 +250,15 @@ extension CreateHabbitViewController: ColorsTableViewCellDelegate {
     }
 }
 
-//MARK: - Private declarations
+//MARK: - Private declarations & layout
 private extension CreateHabbitViewController {
-    //MARK: - Configurating functions
-    func setupView() {
-        view.backgroundColor = UIColor(named: "White")
-        
-        tableView.register(TextFieldTableViewCell.self, forCellReuseIdentifier: TextFieldTableViewCell.textFieldTableViewCellIdentifier)
-        tableView.register(HabbitSetupTableViewCell.self, forCellReuseIdentifier: HabbitSetupTableViewCell.habbitSetupTableViewCellIdentifier)
-        tableView.register(EmojiTableViewCell.self, forCellReuseIdentifier: EmojiTableViewCell.emojiTableViewCellIdentifier)
-        tableView.register(ColorsTableViewCell.self, forCellReuseIdentifier: ColorsTableViewCell.colorsTableViewCellIdentifier)
-        tableView.delegate = self
-        tableView.dataSource = self
-        
+    func setupSubviews() {
         view.addSubview(tableView)
         view.addSubview(cancelButton)
         view.addSubview(createButton)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -282,6 +275,20 @@ private extension CreateHabbitViewController {
             createButton.leadingAnchor.constraint(equalTo: view.centerXAnchor, constant: 4),
             createButton.bottomAnchor.constraint(equalTo: cancelButton.bottomAnchor)
         ])
+    }
+    
+    func setupView() {
+        view.backgroundColor = UIColor(named: "White")
+        
+        tableView.register(TextFieldTableViewCell.self, forCellReuseIdentifier: TextFieldTableViewCell.textFieldTableViewCellIdentifier)
+        tableView.register(HabbitSetupTableViewCell.self, forCellReuseIdentifier: HabbitSetupTableViewCell.habbitSetupTableViewCellIdentifier)
+        tableView.register(EmojiTableViewCell.self, forCellReuseIdentifier: EmojiTableViewCell.emojiTableViewCellIdentifier)
+        tableView.register(ColorsTableViewCell.self, forCellReuseIdentifier: ColorsTableViewCell.colorsTableViewCellIdentifier)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        setupSubviews()
+        setupLayout()
     }
     
     func  fillSheduleIfRequired() {

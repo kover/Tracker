@@ -7,9 +7,10 @@
 
 import UIKit
 
-class ColorCollectionViewCell: UICollectionViewCell {
+final class ColorCollectionViewCell: UICollectionViewCell {
     static let colorCollectionViewCellIdentifier = "colorCollectionViewCell"
     
+    // MARK: - Layout items
     private lazy var colorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -23,8 +24,18 @@ class ColorCollectionViewCell: UICollectionViewCell {
     func setupCell(color: UIColor) {
         colorView.backgroundColor = color
 
+        setupSubviews()
+        setupLayout()
+    }
+}
+
+// MARK: - Layout configuration
+private extension ColorCollectionViewCell {
+    func setupSubviews() {
         contentView.addSubview(colorView)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 6),
             colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6),
@@ -33,4 +44,3 @@ class ColorCollectionViewCell: UICollectionViewCell {
         ])
     }
 }
-

@@ -9,9 +9,15 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
-    private let createTrackerSegueIdentifier = "CreateTrackerSegue"
+    // MARK: - Data structures
+    private var categories: [TrackerCategory] = []
+    private var completedTrackers: [TrackerRecord] = []
+    private var visibleCategories: [TrackerCategory] = []
+    private var currentDate: Date?
+
     
-    private var searchTextField: UISearchTextField = {
+    // MARK: Layout items
+    private let searchTextField: UISearchTextField = {
         let searchTextField = UISearchTextField(frame: .zero)
         searchTextField.placeholder = "Поиск"
         
@@ -20,7 +26,7 @@ final class TrackersViewController: UIViewController {
         return searchTextField
     }()
     
-    private var collectionView: UICollectionView = {
+    private let collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -46,15 +52,8 @@ final class TrackersViewController: UIViewController {
     
     private let datePicker = UIDatePicker()
     
-    // MARK: - Data structures
-    private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
-    private var visibleCategories: [TrackerCategory] = []
-    private var currentDate: Date?
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
         configureNavBar()
         configureSearch()
@@ -130,7 +129,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
 }
-// MARK: - TrackersViewControlelrDelegate implementation
+// MARK: - CreateHabbitViewControllerDelegate
 extension TrackersViewController: CreateHabbitViewControllerDelegate {
     func addTracker(
         category: TrackerCategory,
@@ -156,6 +155,7 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
         trackersForSelectedDate()
     }
 }
+// MARK: - TrackersCollectionViewCellDelegate
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
         guard let indexPath = collectionView.indexPath(for: cell) else {
@@ -170,6 +170,7 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         collectionView.reloadItems(at: [indexPath])
     }
 }
+// MARK: - Private routines & layout
 private extension TrackersViewController {
     private func showPlaceholder() {
         view.addSubview(placeholderView)

@@ -7,9 +7,10 @@
 
 import UIKit
 
-class TrackersCollectionReusableView: UICollectionReusableView {
+final class TrackersCollectionReusableView: UICollectionReusableView {
     static let trackerCollectionReusableViewIdentifier = "TrackerCollectionReusableView"
 
+    // MARK: - Layout items
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -25,8 +26,17 @@ class TrackersCollectionReusableView: UICollectionReusableView {
     func setupCell(title: String) {
         titleLabel.text = title
         
+        setupSubviews()
+        setupLayout()
+    }
+}
+// MARK: - Layout configuration
+private extension TrackersCollectionReusableView {
+    func setupSubviews() {
         addSubview(titleLabel)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -28),
@@ -35,4 +45,3 @@ class TrackersCollectionReusableView: UICollectionReusableView {
         ])
     }
 }
-

@@ -11,12 +11,21 @@ protocol ColorsTableViewCellDelegate: AnyObject {
     func updateColor(with color: UIColor?)
 }
 
-class ColorsTableViewCell: UITableViewCell {
+final class ColorsTableViewCell: UITableViewCell {
     
     static let colorsTableViewCellIdentifier = "colorsTableViewCell"
 
     var delegate: ColorsTableViewCellDelegate?
     
+    private let colors = [UIColor(named: "Selection1"),  UIColor(named: "Selection2"),  UIColor(named: "Selection3"),
+                          UIColor(named: "Selection4"),  UIColor(named: "Selection5"),  UIColor(named: "Selection6"),
+                          UIColor(named: "Selection7"),  UIColor(named: "Selection8"),  UIColor(named: "Selection9"),
+                          UIColor(named: "Selection10"), UIColor(named: "Selection11"), UIColor(named: "Selection12"),
+                          UIColor(named: "Selection13"), UIColor(named: "Selection14"), UIColor(named: "Selection15"),
+                          UIColor(named: "Selection16"), UIColor(named: "Selection17"), UIColor(named: "Selection18")
+    ]
+    
+    // MARK: - Layout items
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         
@@ -46,32 +55,12 @@ class ColorsTableViewCell: UITableViewCell {
         return collectionView
     }()
     
-    private let colors = [UIColor(named: "Selection1"),  UIColor(named: "Selection2"),  UIColor(named: "Selection3"),
-                          UIColor(named: "Selection4"),  UIColor(named: "Selection5"),  UIColor(named: "Selection6"),
-                          UIColor(named: "Selection7"),  UIColor(named: "Selection8"),  UIColor(named: "Selection9"),
-                          UIColor(named: "Selection10"), UIColor(named: "Selection11"), UIColor(named: "Selection12"),
-                          UIColor(named: "Selection13"), UIColor(named: "Selection14"), UIColor(named: "Selection15"),
-                          UIColor(named: "Selection16"), UIColor(named: "Selection17"), UIColor(named: "Selection18")
-    ]
-    
     //MARK: - Cell configuration
     func setupCell() {
         selectionStyle = .none
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(colorsCollectionView)
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 18),
-            
-            colorsCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            colorsCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            colorsCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
-            colorsCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-        
+        setupSubviews()
+        setupLayout()
     }
 }
 
@@ -108,8 +97,26 @@ extension ColorsTableViewCell: UICollectionViewDelegate {
     }
 }
 
-//MARK: - Private routines
+//MARK: - Private routines & layout
 private extension ColorsTableViewCell {
+    
+    func setupSubviews() {
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(colorsCollectionView)
+    }
+    
+    func setupLayout() {
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            colorsCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            colorsCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            colorsCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
+            colorsCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
 
     func setCellBorder(cell: UICollectionViewCell?, color: UIColor?) {
         guard let cell = cell,

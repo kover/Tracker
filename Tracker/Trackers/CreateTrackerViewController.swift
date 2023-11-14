@@ -7,10 +7,11 @@
 
 import UIKit
 
-class CreateTrackerViewController: UIViewController {
+final class CreateTrackerViewController: UIViewController {
     
     weak var delegate: CreateHabbitViewControllerDelegate?
 
+    // MARK: - Layout items
     private lazy var createHabitButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -37,11 +38,15 @@ class CreateTrackerViewController: UIViewController {
         return button
     }()
 
+    // MARK: - Lifecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Создание трекера"
         
-        configureViews()
+        view.backgroundColor = UIColor.white
+        
+        setupSubviews()
+        setupLayout()
     }
 
     @objc func createHabbit() {
@@ -79,13 +84,15 @@ class CreateTrackerViewController: UIViewController {
 
         present(navigationController, animated: true)
     }
-    
-    private func configureViews() {
-        view.backgroundColor = UIColor.white
-        
+}
+// MARK: - Layout configuration
+private extension CreateTrackerViewController {
+    func setupSubviews() {
         view.addSubview(createEventButton)
         view.addSubview(createHabitButton)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             createHabitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             createHabitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -97,5 +104,6 @@ class CreateTrackerViewController: UIViewController {
             createEventButton.topAnchor.constraint(equalTo: createHabitButton.bottomAnchor, constant: 16),
             createEventButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+
     }
 }

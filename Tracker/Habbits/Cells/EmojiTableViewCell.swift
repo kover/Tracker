@@ -17,6 +17,11 @@ final class EmojiTableViewCell: UITableViewCell {
     
     var delegate: EmojiTableViewCellDelegate?
     
+    private let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱",
+                         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
+                         "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
+    
+    // MARK: - Layout items
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         
@@ -49,28 +54,12 @@ final class EmojiTableViewCell: UITableViewCell {
         return collectionView
     }()
     
-    private let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱",
-                         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
-                         "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
-    
     //MARK: - Cell configuration
     func setupCell() {
         selectionStyle = .none
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(emojiCollectionView)
-        
-        NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 18),
-            
-            emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            emojiCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
-            emojiCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-
+        setupSubviews()
+        setupLayout()
     }
 }
 
@@ -107,3 +96,23 @@ extension EmojiTableViewCell: UICollectionViewDelegate {
     }
 }
 
+// MARK: - Layout configuration
+private extension EmojiTableViewCell {
+    func setupSubviews() {
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(emojiCollectionView)
+    }
+    
+    func setupLayout() {
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            titleLabel.heightAnchor.constraint(equalToConstant: 18),
+            
+            emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            emojiCollectionView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
+            emojiCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+}
