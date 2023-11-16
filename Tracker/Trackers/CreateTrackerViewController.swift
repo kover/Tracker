@@ -7,8 +7,11 @@
 
 import UIKit
 
-class CreateTrackerViewController: UIViewController {
+final class CreateTrackerViewController: UIViewController {
+    
+    weak var delegate: CreateHabbitViewControllerDelegate?
 
+    // MARK: - Layout items
     private lazy var createHabitButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -17,6 +20,7 @@ class CreateTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(createHabbit), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
         button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
         
         return button
     }()
@@ -29,20 +33,33 @@ class CreateTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(createIrregularEvent), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
         button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
         
         return button
     }()
 
+    // MARK: - Lifecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Создание трекера"
         
-        configureViews()
+        view.backgroundColor = UIColor.white
+        
+        setupSubviews()
+        setupLayout()
     }
 
     @objc func createHabbit() {
         let createHabbitViewController = CreateHabbitViewController()
         createHabbitViewController.title = "Новая привычка"
+        createHabbitViewController.delegate = delegate
+        createHabbitViewController.cells = [
+            0: ["textField"],
+            1: ["category","shedule"],
+            2: ["emoji"],
+            3: ["colors"]
+        ]
+
         
         let navigationController = UINavigationController()
         navigationController.viewControllers = [createHabbitViewController]
@@ -51,14 +68,31 @@ class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createIrregularEvent() {
-    }
-    
-    private func configureViews() {
-        view.backgroundColor = UIColor.white
+        let createHabbitViewController = CreateHabbitViewController()
+        createHabbitViewController.title = "Новая нерегулярное событие"
+        createHabbitViewController.delegate = delegate
+        createHabbitViewController.cells = [
+            0: ["textField"],
+            1: ["category"],
+            2: ["emoji"],
+            3: ["colors"]
+        ]
+
         
+        let navigationController = UINavigationController()
+        navigationController.viewControllers = [createHabbitViewController]
+
+        present(navigationController, animated: true)
+    }
+}
+// MARK: - Layout configuration
+private extension CreateTrackerViewController {
+    func setupSubviews() {
         view.addSubview(createEventButton)
         view.addSubview(createHabitButton)
-        
+    }
+    
+    func setupLayout() {
         NSLayoutConstraint.activate([
             createHabitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             createHabitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -70,5 +104,6 @@ class CreateTrackerViewController: UIViewController {
             createEventButton.topAnchor.constraint(equalTo: createHabitButton.bottomAnchor, constant: 16),
             createEventButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+
     }
 }
