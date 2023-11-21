@@ -15,8 +15,17 @@ final class ListCategoriesViewController: UIViewController {
 
     weak var delegate: SelectCategoryDelegate?
     
-    private let categoryStore = CategoryStore.shared
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
     private var categories: [TrackerCategory] = []
+    
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol) {
+        self.trackerCategoryStore = trackerCategoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Layout items
     private lazy var placeholderImageView: UIImageView = {
@@ -86,7 +95,7 @@ final class ListCategoriesViewController: UIViewController {
 //MARK: - CreateCategoryDelegate
 extension ListCategoriesViewController: CreateCategoryDelegate {
     func createCategory(category: String) {
-        categoryStore.addCategory(category: TrackerCategory(title: category, trackers: []))
+        trackerCategoryStore.addCategory(TrackerCategory(title: category, trackers: []))
         categories = getCategories()
         togglePlaceholderVisibility()
         categoryTableView.reloadData()
@@ -181,7 +190,7 @@ private extension ListCategoriesViewController {
     }
             
     func getCategories() -> [TrackerCategory] {
-        categories = categoryStore.getCategories()
+        categories = trackerCategoryStore.getCategories()
         return categories
     }
     

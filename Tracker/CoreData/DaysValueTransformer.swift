@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc
+@objc(DaysValueTransformer)
 final class DaysValueTransformer: ValueTransformer {
     
     static func register() {

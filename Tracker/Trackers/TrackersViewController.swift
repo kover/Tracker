@@ -14,7 +14,21 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
-
+    
+    // MARK: - Stores
+    private let trackerStore: TrackerStoreProtocol
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    
+    init(trackerStore: TrackerStoreProtocol, trackerCategoryStore: TrackerCategoryStoreProtocol) {
+        self.trackerStore = trackerStore
+        self.trackerCategoryStore = trackerCategoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     // MARK: Layout items
     private let searchTextField: UISearchTextField = {
@@ -62,7 +76,7 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc func createTracker() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = CreateTrackerViewController(trackerCategoryStore: trackerCategoryStore)
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController()
         navigationController.viewControllers = [createTrackerViewController]

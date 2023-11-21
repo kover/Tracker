@@ -20,7 +20,10 @@ final class TabBarController: UITabBarController {
         tabBar.layer.borderColor = UIColor(named: "Black")?.cgColor
         tabBar.layer.borderWidth = 0.2
         
-        let trackersViewController = TrackersViewController()
+        let trackerStore = TrackerStore()
+        let trackerCategoryStore = TrackerCategoryStore()
+        
+        let trackersViewController = TrackersViewController(trackerStore: trackerStore, trackerCategoryStore: trackerCategoryStore)
         let statisticsViewController = StatisticsViewController()
         
         trackersViewController.navigationItem.title = "Трекеры"

@@ -28,6 +28,17 @@ final class CreateHabbitViewController: UIViewController {
     weak var delegate: CreateHabbitViewControllerDelegate?
     var cells: Dictionary<Int, [String]>?
     
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol) {
+        self.trackerCategoryStore = trackerCategoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Layout items
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
@@ -309,7 +320,7 @@ private extension CreateHabbitViewController {
         }
         
         if indexPath.row == 0 {
-            viewController = ListCategoriesViewController()
+            viewController = ListCategoriesViewController(trackerCategoryStore: trackerCategoryStore)
         } else if indexPath.row == 1 {
             viewController = ScheduleViewController()
         }

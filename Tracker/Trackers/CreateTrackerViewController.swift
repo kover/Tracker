@@ -10,7 +10,18 @@ import UIKit
 final class CreateTrackerViewController: UIViewController {
     
     weak var delegate: CreateHabbitViewControllerDelegate?
-
+    
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol) {
+        self.trackerCategoryStore = trackerCategoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Layout items
     private lazy var createHabitButton: UIButton = {
         let button = UIButton()
@@ -50,7 +61,7 @@ final class CreateTrackerViewController: UIViewController {
     }
 
     @objc func createHabbit() {
-        let createHabbitViewController = CreateHabbitViewController()
+        let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.title = "Новая привычка"
         createHabbitViewController.delegate = delegate
         createHabbitViewController.cells = [
@@ -68,7 +79,7 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createIrregularEvent() {
-        let createHabbitViewController = CreateHabbitViewController()
+        let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.title = "Новая нерегулярное событие"
         createHabbitViewController.delegate = delegate
         createHabbitViewController.cells = [
