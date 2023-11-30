@@ -16,11 +16,14 @@ final class ListCategoriesViewController: UIViewController {
     weak var delegate: SelectCategoryDelegate?
     
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
-    private var categories: [TrackerCategory] = []
+    var categories: [TrackerCategory] {
+        return trackerCategoryStore.getCategories()
+    }
     
     init(trackerCategoryStore: TrackerCategoryStoreProtocol) {
         self.trackerCategoryStore = trackerCategoryStore
         super.init(nibName: nil, bundle: nil)
+        self.trackerCategoryStore.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -85,8 +88,6 @@ final class ListCategoriesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        categories = getCategories()
-        
         setupSubviews()
         setupLayout()
     }
@@ -96,20 +97,20 @@ final class ListCategoriesViewController: UIViewController {
 extension ListCategoriesViewController: CreateCategoryDelegate {
     func createCategory(category: String) {
         trackerCategoryStore.addCategory(TrackerCategory(title: category, trackers: []))
-        categories = getCategories()
         togglePlaceholderVisibility()
-        categoryTableView.reloadData()
     }
 }
 
 //MARK: - UITableViewDataSource
 extension ListCategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return trackerCategoryStore.numberOfRowsInSection(section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let category = categories[indexPath.row]
+        guard let category = trackerCategoryStore.object(at: indexPath) else {
+            return UITableViewCell()
+        }
         let header = category.title
         
         guard let cell = categoryTableView.dequeueReusableCell(
@@ -136,6 +137,17 @@ extension ListCategoriesViewController: UITableViewDelegate {
         delegate.updateCategory(category: categories[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: false)
         dismiss(animated: true)
+    }
+}
+
+extension ListCategoriesViewController: TrackerCategoryStoreDelegate {
+    func didUpdate(_ update: TrackerCategoryStoreUpdate) {
+        categoryTableView.performBatchUpdates {
+            let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
+            let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
+            categoryTableView.insertRows(at: insertedIndexPaths, with: .automatic)
+            categoryTableView.deleteRows(at: deletedIndexPaths, with: .fade)
+        }
     }
 }
 
@@ -187,11 +199,6 @@ private extension ListCategoriesViewController {
             placeholderLabel.isHidden = false
             placeholderImageView.isHidden = false
         }
-    }
-            
-    func getCategories() -> [TrackerCategory] {
-        categories = trackerCategoryStore.getCategories()
-        return categories
     }
     
     @objc func addCategory() {

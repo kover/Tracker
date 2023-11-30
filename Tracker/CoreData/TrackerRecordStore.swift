@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-protocol TrackerRecordStoreProtocol {
+protocol TrackerRecordStoreProtocol: AnyObject {
     func getRecords() -> [TrackerRecord]
 }
 
