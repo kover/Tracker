@@ -9,11 +9,11 @@ import UIKit
 import CoreData
 
 protocol TrackerStoreProtocol: AnyObject {
-    func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
+    var delegate: TrackerStoreDelegate? { get set }
     var numberOfSections: Int { get }
+    func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
-    var delegate: TrackerStoreDelegate? { get set }
     func titleForSection(at indexPath: IndexPath) -> String
 }
 
@@ -125,13 +125,7 @@ private extension TrackerStore {
 extension TrackerStore: TrackerStoreProtocol {
     func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData) {
         let entity = TrackerCoreData(context: context)
-        entity.id = tracker.id
-        entity.color = tracker.color
-        entity.emoji = tracker.emoji
-        entity.name = tracker.name
-        entity.schedule = try? JSONEncoder().encode(tracker.schedule)
-        entity.category = category
-        saveContext()
+        updateTrackerEntity(entity, with: tracker, for: category)
     }
     
     var numberOfSections: Int {

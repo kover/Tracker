@@ -10,6 +10,7 @@ import UIKit
 
 protocol TrackerCategoryStoreProtocol: AnyObject {
     var delegate: TrackerCategoryStoreDelegate? { get set }
+    var changeDelegate: TrackerCategoryChangeDelegate? { get set }
     var numberOfSections: Int { get }
     func getCategories() -> [TrackerCategory]
     func addCategory(_ category: TrackerCategory)
@@ -28,6 +29,10 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
     func didUpdate(_ update: TrackerCategoryStoreUpdate)
 }
 
+protocol TrackerCategoryChangeDelegate: AnyObject {
+    func didChange(_ change: TrackerCategoryStoreUpdate)
+}
+
 enum TrackerCategoryError: Error {
     case failedToConvertCategory
 }
@@ -36,6 +41,7 @@ final class TrackerCategoryStore: NSObject {
     private var context: NSManagedObjectContext
     
     weak var delegate: TrackerCategoryStoreDelegate?
+    weak var changeDelegate: TrackerCategoryChangeDelegate?
     private var insertedIndexes: IndexSet?
     private var updatedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
@@ -159,6 +165,11 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
                 deletedIndexes: deletedIndexes!
             )
         )
+        changeDelegate?.didChange(TrackerCategoryStoreUpdate(
+            insertedIndexes: insertedIndexes!,
+            updatedIndexes: updatedIndexes!,
+            deletedIndexes: deletedIndexes!
+        ))
         insertedIndexes = nil
         updatedIndexes = nil
         deletedIndexes = nil

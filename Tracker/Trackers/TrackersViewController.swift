@@ -69,7 +69,7 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        trackerStore.delegate = self
+        trackerCategoryStore.changeDelegate = self
         
         configureNavBar()
         configureSearch()
@@ -212,8 +212,8 @@ extension TrackersViewController: UITextFieldDelegate {
     }
 }
 // MARK: - TrackerStoreDelegate
-extension TrackersViewController: TrackerStoreDelegate {
-    func didUpdate(_ update: TrackerStoreUpdate) {
+extension TrackersViewController: TrackerCategoryChangeDelegate {
+    func didChange(_ update: TrackerCategoryStoreUpdate) {
         categories = trackerCategoryStore.getCategories()
         trackersForSelectedDate()
     }
