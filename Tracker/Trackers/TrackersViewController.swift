@@ -69,10 +69,15 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        trackerCategoryStore.changeDelegate = self
+        
         configureNavBar()
         configureSearch()
         configureCollection()
         showPlaceholder()
+        
+        categories = trackerCategoryStore.getCategories()
+        trackersForSelectedDate()
     }
     
     @objc func createTracker() {
@@ -98,7 +103,9 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, for: indexPath) as? TrackersCollectionViewCell else {
+        guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, 
+                                                                   for: indexPath) as? TrackersCollectionViewCell
+        else {
             return TrackersCollectionViewCell()
         }
         
@@ -160,13 +167,10 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
             schedule: schedule
         )
         
-        if categories.contains(where: { $0.title == category.title }) {
-            categories = categories.map { $0.title == category.title ? TrackerCategory(title: $0.title, trackers: $0.trackers + [newTracker]) : $0 }
-        } else {
-            categories = categories + [TrackerCategory(title: category.title, trackers: [newTracker])]
+        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
+            return
         }
-        
-        trackersForSelectedDate()
+        trackerStore.addTracker(newTracker, for: categoryEntity)
     }
 }
 // MARK: - TrackersCollectionViewCellDelegate
@@ -205,6 +209,13 @@ extension TrackersViewController: UITextFieldDelegate {
     
     override func resignFirstResponder() -> Bool {
         return true
+    }
+}
+// MARK: - TrackerStoreDelegate
+extension TrackersViewController: TrackerCategoryChangeDelegate {
+    func didChange(_ update: TrackerCategoryStoreUpdate) {
+        categories = trackerCategoryStore.getCategories()
+        trackersForSelectedDate()
     }
 }
 // MARK: - Private routines & layout

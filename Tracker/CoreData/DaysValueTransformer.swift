@@ -9,17 +9,10 @@ import Foundation
 
 @objc(DaysValueTransformer)
 final class DaysValueTransformer: ValueTransformer {
-    
-    static func register() {
-        ValueTransformer.setValueTransformer(
-            DaysValueTransformer(),
-            forName: NSValueTransformerName(rawValue: String(describing: DaysValueTransformer.self))
-        )
-    }
-    
     override class func transformedValueClass() -> AnyClass {
         NSData.self
     }
+    
     override class func allowsReverseTransformation() -> Bool {
         true
     }
@@ -38,5 +31,13 @@ final class DaysValueTransformer: ValueTransformer {
         }
         
         return try? JSONDecoder().decode([TrackerSchedule].self, from: data as Data)
+    }
+}
+extension DaysValueTransformer {
+    static let name = NSValueTransformerName(rawValue: String(describing: DaysValueTransformer.self))
+
+    public static func register() {
+        let transformer = DaysValueTransformer()
+        ValueTransformer.setValueTransformer(transformer, forName: name)
     }
 }
