@@ -5,7 +5,6 @@
 //  Created by Konstantin Penzin on 11.11.2023.
 //
 
-import Foundation
 import CoreData
 import UIKit
 
@@ -16,6 +15,7 @@ protocol TrackerCategoryStoreProtocol: AnyObject {
     var numberOfSections: Int { get }
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> TrackerCategory?
+    func addTracker(_ tracker: TrackerCoreData, to category: TrackerCategory)
 }
 
 struct TrackerCategoryStoreUpdate {
@@ -28,7 +28,7 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 }
 
 enum TrackerCategoryError: Error {
-case failedToConvertCategory
+    case failedToConvertCategory
 }
 
 final class TrackerCategoryStore: NSObject {
@@ -64,9 +64,9 @@ final class TrackerCategoryStore: NSObject {
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         
-        if let objects = fetchedResultsController.fetchedObjects, objects.isEmpty {
-            addCategory(TrackerCategory(title: "Default", trackers: []))
-        }
+//        if let objects = fetchedResultsController.fetchedObjects, objects.isEmpty {
+//            addCategory(TrackerCategory(title: "Default", trackers: []))
+//        }
         
         return fetchedResultsController
     }()
@@ -89,12 +89,14 @@ private extension TrackerCategoryStore {
             guard let id = $0.id,
                   let name = $0.name,
                   let color = $0.color as? UIColor,
-                  let emoji = $0.emoji
+                  let emoji = $0.emoji,
+                  let scheduleRaw = $0.schedule,
+                  let schedule = try? JSONDecoder().decode([TrackerSchedule].self, from: scheduleRaw)
             else {
                 return
             }
             
-            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: []))
+            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule))
         }
         return trackers
     }
@@ -136,6 +138,14 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
     
     func object(at: IndexPath) -> TrackerCategory? {
         try? convertFetchedCategory(fetchedResultsController.object(at: at))
+    }
+    
+    func addTracker(_ tracker: TrackerCoreData, to category: TrackerCategory) {
+        guard let entity = fetchedResultsController.fetchedObjects?.first(where: { $0.title == category.title }) else {
+            return
+        }
+        entity.addToTrackers(tracker)
+        saveContext()
     }
 }
 // MARK: - NSFetchedResultsControllerDelegate
