@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 
 protocol TrackerStoreProtocol: AnyObject {
-    func addTracker(_ tracker: Tracker) -> TrackerCoreData
+    func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
     var numberOfSections: Int { get }
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
@@ -19,6 +19,7 @@ protocol TrackerStoreProtocol: AnyObject {
 
 struct TrackerStoreUpdate {
     let insertedIndexes: IndexSet
+    let updatedIndexes: IndexSet
     let deletedIndexes: IndexSet
 }
 
@@ -36,6 +37,7 @@ final class TrackerStore: NSObject {
     
     weak var delegate: TrackerStoreDelegate?
     private var insertedIndexes: IndexSet?
+    private var updatedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     
     init(context: NSManagedObjectContext) {
@@ -50,7 +52,7 @@ final class TrackerStore: NSObject {
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCoreData.category, ascending: true),
+            NSSortDescriptor(keyPath: \TrackerCoreData.category?.title, ascending: true),
             NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)
         ]
         
@@ -63,6 +65,8 @@ final class TrackerStore: NSObject {
         
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
+        
+        print("tracker", context)
         
         return fetchedResultsController
     }()
@@ -77,12 +81,14 @@ final class TrackerStore: NSObject {
         }
     }
     
-    func updateTrackerEntity(_ entity: TrackerCoreData, with tracker: Tracker) {
+    func updateTrackerEntity(_ entity: TrackerCoreData, with tracker: Tracker, for category: TrackerCategoryCoreData) {
         entity.id = tracker.id
         entity.color = tracker.color
         entity.emoji = tracker.emoji
         entity.name = tracker.name
         entity.schedule = try? JSONEncoder().encode(tracker.schedule)
+        entity.category = category
+        saveContext()
     }
 }
 // MARK: Private routines
@@ -117,10 +123,15 @@ private extension TrackerStore {
 }
 // MARK: - TrackerStoreProtocol
 extension TrackerStore: TrackerStoreProtocol {
-    func addTracker(_ tracker: Tracker) -> TrackerCoreData {
-        let trackerEntity = TrackerCoreData(context: context)
-        updateTrackerEntity(trackerEntity, with: tracker)
-        return trackerEntity
+    func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData) {
+        let entity = TrackerCoreData(context: context)
+        entity.id = tracker.id
+        entity.color = tracker.color
+        entity.emoji = tracker.emoji
+        entity.name = tracker.name
+        entity.schedule = try? JSONEncoder().encode(tracker.schedule)
+        entity.category = category
+        saveContext()
     }
     
     var numberOfSections: Int {
@@ -157,12 +168,14 @@ extension TrackerStore: TrackerStoreProtocol {
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexes = IndexSet()
+        updatedIndexes = IndexSet()
         deletedIndexes = IndexSet()
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdate(TrackerStoreUpdate(
                 insertedIndexes: insertedIndexes!,
+                updatedIndexes: updatedIndexes!,
                 deletedIndexes: deletedIndexes!
             )
         )
@@ -180,6 +193,10 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         case .insert:
             if let indexPath = newIndexPath {
                 insertedIndexes?.insert(indexPath.item)
+            }
+        case .update:
+            if let indexPath = newIndexPath {
+                updatedIndexes?.insert(indexPath.item)
             }
         default:
             break

@@ -9,17 +9,18 @@ import CoreData
 import UIKit
 
 protocol TrackerCategoryStoreProtocol: AnyObject {
-    func getCategories() -> [TrackerCategory]
-    func addCategory(_ category: TrackerCategory)
     var delegate: TrackerCategoryStoreDelegate? { get set }
     var numberOfSections: Int { get }
+    func getCategories() -> [TrackerCategory]
+    func addCategory(_ category: TrackerCategory)
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> TrackerCategory?
-    func addTracker(_ tracker: TrackerCoreData, to category: TrackerCategory)
+    func entityFor(category: TrackerCategory) -> TrackerCategoryCoreData?
 }
 
 struct TrackerCategoryStoreUpdate {
     let insertedIndexes: IndexSet
+    let updatedIndexes: IndexSet
     let deletedIndexes: IndexSet
 }
 
@@ -36,6 +37,7 @@ final class TrackerCategoryStore: NSObject {
     
     weak var delegate: TrackerCategoryStoreDelegate?
     private var insertedIndexes: IndexSet?
+    private var updatedIndexes: IndexSet?
     private var deletedIndexes: IndexSet?
     
     init(context: NSManagedObjectContext) {
@@ -64,10 +66,8 @@ final class TrackerCategoryStore: NSObject {
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         
-//        if let objects = fetchedResultsController.fetchedObjects, objects.isEmpty {
-//            addCategory(TrackerCategory(title: "Default", trackers: []))
-//        }
-        
+        print("category", context)
+                
         return fetchedResultsController
     }()
     
@@ -140,28 +140,27 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
         try? convertFetchedCategory(fetchedResultsController.object(at: at))
     }
     
-    func addTracker(_ tracker: TrackerCoreData, to category: TrackerCategory) {
-        guard let entity = fetchedResultsController.fetchedObjects?.first(where: { $0.title == category.title }) else {
-            return
-        }
-        entity.addToTrackers(tracker)
-        saveContext()
+    func entityFor(category: TrackerCategory) -> TrackerCategoryCoreData? {
+        fetchedResultsController.fetchedObjects?.first(where: { $0.title == category.title })
     }
 }
 // MARK: - NSFetchedResultsControllerDelegate
 extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         insertedIndexes = IndexSet()
+        updatedIndexes = IndexSet()
         deletedIndexes = IndexSet()
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdate(TrackerCategoryStoreUpdate(
                 insertedIndexes: insertedIndexes!,
+                updatedIndexes: updatedIndexes!,
                 deletedIndexes: deletedIndexes!
             )
         )
         insertedIndexes = nil
+        updatedIndexes = nil
         deletedIndexes = nil
     }
     
@@ -175,6 +174,10 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         case .insert:
             if let indexPath = newIndexPath {
                 insertedIndexes?.insert(indexPath.item)
+            }
+        case .update:
+            if let indexPath = newIndexPath {
+                updatedIndexes?.insert(indexPath.item)
             }
         default:
             break

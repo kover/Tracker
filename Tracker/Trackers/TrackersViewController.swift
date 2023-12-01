@@ -23,7 +23,6 @@ final class TrackersViewController: UIViewController {
         self.trackerStore = trackerStore
         self.trackerCategoryStore = trackerCategoryStore
         super.init(nibName: nil, bundle: nil)
-        trackerStore.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -70,10 +69,15 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        trackerStore.delegate = self
+        
         configureNavBar()
         configureSearch()
         configureCollection()
         showPlaceholder()
+        
+        categories = trackerCategoryStore.getCategories()
+        trackersForSelectedDate()
     }
     
     @objc func createTracker() {
@@ -91,24 +95,21 @@ final class TrackersViewController: UIViewController {
 // MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return visibleCategories.count
-        return trackerStore.numberOfSections
+        return visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return visibleCategories[section].trackers.count
-        return trackerStore.numberOfRowsInSection(section)
+        return visibleCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, 
-                                                                   for: indexPath) as? TrackersCollectionViewCell,
-              let item = trackerStore.object(at: indexPath)
+                                                                   for: indexPath) as? TrackersCollectionViewCell
         else {
             return TrackersCollectionViewCell()
         }
         
-//        let item = visibleCategories[indexPath.section].trackers[indexPath.row]
+        let item = visibleCategories[indexPath.section].trackers[indexPath.row]
         
         trackerCell.delegate = self
         trackerCell.setupCell(for: item, runFor: calculateCompletion(id: item.id), done: isTrackerCompletedToday(tracker: item), at: datePicker.date)
@@ -124,8 +125,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-//        cell.setupCell(title: visibleCategories[indexPath.section].title)
-        cell.setupCell(title: trackerStore.titleForSection(at: indexPath))
+        cell.setupCell(title: visibleCategories[indexPath.section].title)
         
         return cell
     }
@@ -167,16 +167,10 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
             schedule: schedule
         )
         
-        let trackerEntity = trackerStore.addTracker(newTracker)
-        trackerCategoryStore.addTracker(trackerEntity, to: category)
-        
-//        if categories.contains(where: { $0.title == category.title }) {
-//            categories = categories.map { $0.title == category.title ? TrackerCategory(title: $0.title, trackers: $0.trackers + [newTracker]) : $0 }
-//        } else {
-//            categories = categories + [TrackerCategory(title: category.title, trackers: [newTracker])]
-//        }
-        
-        trackersForSelectedDate()
+        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
+            return
+        }
+        trackerStore.addTracker(newTracker, for: categoryEntity)
     }
 }
 // MARK: - TrackersCollectionViewCellDelegate
@@ -220,7 +214,8 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
-        print(update)
+        categories = trackerCategoryStore.getCategories()
+        trackersForSelectedDate()
     }
 }
 // MARK: - Private routines & layout
