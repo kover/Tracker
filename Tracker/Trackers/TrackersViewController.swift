@@ -72,12 +72,10 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         
         trackerCategoryStore.changeDelegate = self
-//        trackerRecordStore.delegate = self
         
         configureNavBar()
         configureSearch()
         configureCollection()
-        showPlaceholder()
         
         categories = trackerCategoryStore.getCategories()
         completedTrackers = trackerRecordStore.getRecords()
@@ -226,14 +224,6 @@ extension TrackersViewController: TrackerCategoryChangeDelegate {
 }
 // MARK: - Private routines & layout
 private extension TrackersViewController {
-    private func showPlaceholder() {
-        view.addSubview(placeholderView)
-        
-        NSLayoutConstraint.activate([
-            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
 
     private func configureNavBar() {
         let addHabbitButton = UIBarButtonItem(
@@ -269,21 +259,25 @@ private extension TrackersViewController {
     private func configureCollection() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.backgroundView = placeholderView
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 24),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            placeholderView.widthAnchor.constraint(equalTo: collectionView.widthAnchor),
+            placeholderView.heightAnchor.constraint(equalTo: collectionView.heightAnchor)
         ])
     }
     
     func togglePlaceholder(search: Bool = false) {        
         if visibleCategories.count == 0 {
-            placeholderView.isHidden = false
+            collectionView.backgroundView?.isHidden = false
         } else {
-            placeholderView.isHidden = true
+            collectionView.backgroundView?.isHidden = true
         }
     }
     

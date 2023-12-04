@@ -33,7 +33,7 @@ class TrackersPlaceholderView: UIView {
         
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: self.topAnchor),
+            imageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
             label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8)
         ])

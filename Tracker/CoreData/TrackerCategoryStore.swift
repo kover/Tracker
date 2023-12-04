@@ -71,8 +71,6 @@ final class TrackerCategoryStore: NSObject {
                                                                   cacheName: nil)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
-        
-        print("category", context)
                 
         return fetchedResultsController
     }()

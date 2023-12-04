@@ -59,8 +59,6 @@ final class TrackerRecordStore: NSObject {
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
         
-        print("category", context)
-                
         return fetchedResultsController
     }()
     
