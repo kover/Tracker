@@ -18,10 +18,12 @@ final class TrackersViewController: UIViewController {
     // MARK: - Stores
     private let trackerStore: TrackerStoreProtocol
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
     
-    init(trackerStore: TrackerStoreProtocol, trackerCategoryStore: TrackerCategoryStoreProtocol) {
+    init(trackerStore: TrackerStoreProtocol, trackerCategoryStore: TrackerCategoryStoreProtocol, trackerRecordStore: TrackerRecordStoreProtocol) {
         self.trackerStore = trackerStore
         self.trackerCategoryStore = trackerCategoryStore
+        self.trackerRecordStore = trackerRecordStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -70,6 +72,7 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         
         trackerCategoryStore.changeDelegate = self
+//        trackerRecordStore.delegate = self
         
         configureNavBar()
         configureSearch()
@@ -77,6 +80,7 @@ final class TrackersViewController: UIViewController {
         showPlaceholder()
         
         categories = trackerCategoryStore.getCategories()
+        completedTrackers = trackerRecordStore.getRecords()
         trackersForSelectedDate()
     }
     
@@ -178,16 +182,18 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
         guard
             let indexPath = collectionView.indexPath(for: cell),
-            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date))
+            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date)),
+            let trackerEntity = trackerStore.getEntityFor(tracker: tracker)
         else {
             return
         }
         if isCompleted {
-            completedTrackers = completedTrackers + [TrackerRecord(tracker: tracker, date: date)]
+            trackerRecordStore.check(tracker: trackerEntity, for: date)
         } else {
-            completedTrackers = completedTrackers.filter { $0.tracker.id != tracker.id || $0.tracker.id == tracker.id && $0.date.compare(date) != .orderedSame }
+            trackerRecordStore.uncheck(tracker: trackerEntity, for: date)
         }
         
+        completedTrackers = trackerRecordStore.getRecords()
         collectionView.reloadItems(at: [indexPath])
     }
 }

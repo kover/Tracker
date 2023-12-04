@@ -15,6 +15,7 @@ protocol TrackerStoreProtocol: AnyObject {
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
     func titleForSection(at indexPath: IndexPath) -> String
+    func getEntityFor(tracker: Tracker) -> TrackerCoreData?
 }
 
 struct TrackerStoreUpdate {
@@ -156,6 +157,10 @@ extension TrackerStore: TrackerStoreProtocol {
         let tracker = fetchedResultsController.object(at: indexPath)
         
         return tracker.category?.title ?? ""
+    }
+    
+    func getEntityFor(tracker: Tracker) -> TrackerCoreData? {
+        return fetchedResultsController.fetchedObjects?.first(where: { $0.id == tracker.id })
     }
 }
 // MARK: - NSFetchedResultsControllerDelegate
