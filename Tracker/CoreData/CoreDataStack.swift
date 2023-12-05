@@ -5,8 +5,8 @@
 //  Created by Konstantin Penzin on 20.11.2023.
 //
 
-import Foundation
 import CoreData
+import Foundation
 
 final class CoreDataStack {
     

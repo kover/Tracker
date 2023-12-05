@@ -5,8 +5,8 @@
 //  Created by Konstantin Penzin on 12.11.2023.
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 protocol TrackerRecordStoreProtocol: AnyObject {
     var delegate: TrackerRecordStoreDelegate? { get set }

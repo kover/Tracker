@@ -158,15 +158,15 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdate(TrackerCategoryStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                deletedIndexes: deletedIndexes!
+                insertedIndexes: insertedIndexes ?? [],
+                updatedIndexes: updatedIndexes ?? [],
+                deletedIndexes: deletedIndexes ?? []
             )
         )
         changeDelegate?.didChange(TrackerCategoryStoreUpdate(
-            insertedIndexes: insertedIndexes!,
-            updatedIndexes: updatedIndexes!,
-            deletedIndexes: deletedIndexes!
+            insertedIndexes: insertedIndexes ?? [],
+            updatedIndexes: updatedIndexes ?? [],
+            deletedIndexes: deletedIndexes ?? []
         ))
         insertedIndexes = nil
         updatedIndexes = nil
