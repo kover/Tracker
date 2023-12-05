@@ -14,7 +14,23 @@ final class TrackersViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
-
+    
+    // MARK: - Stores
+    private let trackerStore: TrackerStoreProtocol
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
+    
+    init(trackerStore: TrackerStoreProtocol, trackerCategoryStore: TrackerCategoryStoreProtocol, trackerRecordStore: TrackerRecordStoreProtocol) {
+        self.trackerStore = trackerStore
+        self.trackerCategoryStore = trackerCategoryStore
+        self.trackerRecordStore = trackerRecordStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     // MARK: Layout items
     private let searchTextField: UISearchTextField = {
@@ -55,14 +71,19 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        trackerCategoryStore.changeDelegate = self
+        
         configureNavBar()
         configureSearch()
         configureCollection()
-        showPlaceholder()
+        
+        categories = trackerCategoryStore.getCategories()
+        completedTrackers = trackerRecordStore.getRecords()
+        trackersForSelectedDate()
     }
     
     @objc func createTracker() {
-        let createTrackerViewController = CreateTrackerViewController()
+        let createTrackerViewController = CreateTrackerViewController(trackerCategoryStore: trackerCategoryStore)
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController()
         navigationController.viewControllers = [createTrackerViewController]
@@ -84,7 +105,9 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, for: indexPath) as? TrackersCollectionViewCell else {
+        guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, 
+                                                                   for: indexPath) as? TrackersCollectionViewCell
+        else {
             return TrackersCollectionViewCell()
         }
         
@@ -146,13 +169,10 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
             schedule: schedule
         )
         
-        if categories.contains(where: { $0.title == category.title }) {
-            categories = categories.map { $0.title == category.title ? TrackerCategory(title: $0.title, trackers: $0.trackers + [newTracker]) : $0 }
-        } else {
-            categories = categories + [TrackerCategory(title: category.title, trackers: [newTracker])]
+        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
+            return
         }
-        
-        trackersForSelectedDate()
+        trackerStore.addTracker(newTracker, for: categoryEntity)
     }
 }
 // MARK: - TrackersCollectionViewCellDelegate
@@ -160,16 +180,18 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
         guard
             let indexPath = collectionView.indexPath(for: cell),
-            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date))
+            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date)),
+            let trackerEntity = trackerStore.getEntityFor(tracker: tracker)
         else {
             return
         }
         if isCompleted {
-            completedTrackers = completedTrackers + [TrackerRecord(tracker: tracker, date: date)]
+            trackerRecordStore.check(tracker: trackerEntity, for: date)
         } else {
-            completedTrackers = completedTrackers.filter { $0.tracker.id != tracker.id || $0.tracker.id == tracker.id && $0.date.compare(date) != .orderedSame }
+            trackerRecordStore.uncheck(tracker: trackerEntity, for: date)
         }
         
+        completedTrackers = trackerRecordStore.getRecords()
         collectionView.reloadItems(at: [indexPath])
     }
 }
@@ -193,16 +215,15 @@ extension TrackersViewController: UITextFieldDelegate {
         return true
     }
 }
+// MARK: - TrackerStoreDelegate
+extension TrackersViewController: TrackerCategoryChangeDelegate {
+    func didChange(_ update: TrackerCategoryStoreUpdate) {
+        categories = trackerCategoryStore.getCategories()
+        trackersForSelectedDate()
+    }
+}
 // MARK: - Private routines & layout
 private extension TrackersViewController {
-    private func showPlaceholder() {
-        view.addSubview(placeholderView)
-        
-        NSLayoutConstraint.activate([
-            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
 
     private func configureNavBar() {
         let addHabbitButton = UIBarButtonItem(
@@ -238,21 +259,25 @@ private extension TrackersViewController {
     private func configureCollection() {
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.backgroundView = placeholderView
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 24),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            placeholderView.widthAnchor.constraint(equalTo: collectionView.widthAnchor),
+            placeholderView.heightAnchor.constraint(equalTo: collectionView.heightAnchor)
         ])
     }
     
     func togglePlaceholder(search: Bool = false) {        
         if visibleCategories.count == 0 {
-            placeholderView.isHidden = false
+            collectionView.backgroundView?.isHidden = false
         } else {
-            placeholderView.isHidden = true
+            collectionView.backgroundView?.isHidden = true
         }
     }
     
