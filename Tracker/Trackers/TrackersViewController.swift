@@ -10,9 +10,7 @@ import UIKit
 final class TrackersViewController: UIViewController {
     
     // MARK: - Data structures
-    private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
-    private var visibleCategories: [TrackerCategory] = []
     private var currentDate: Date?
     
     // MARK: - Stores
@@ -71,11 +69,12 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        trackerStore.delegate = self
+        
         configureNavBar()
         configureSearch()
         configureCollection()
         
-        categories = trackerCategoryStore.getCategories()
         completedTrackers = trackerRecordStore.getRecords()
         trackersForSelectedDate()
     }
@@ -215,20 +214,11 @@ extension TrackersViewController: UITextFieldDelegate {
     }
 }
 // MARK: - TrackerStoreDelegate
-extension TrackersViewController: TrackerCategoryChangeDelegate {
-    func didChange(_ update: TrackerCategoryStoreUpdate) {
-        categories = trackerCategoryStore.getCategories()
-        trackersForSelectedDate()
-    }
-}
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
         collectionView.performBatchUpdates {
-//            let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
-//            let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
-//            categoryTableView.insertRows(at: insertedIndexPaths, with: .automatic)
-//            categoryTableView.deleteRows(at: deletedIndexPaths, with: .fade)
-//            collectionView.insertItems(at: update.insertedIndexes.map {IndexPath($0.)})
+            collectionView.insertItems(at: update.insertedIndexes)
+            collectionView.deleteItems(at: update.deletedIndexes)
         }
     }
 }

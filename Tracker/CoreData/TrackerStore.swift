@@ -21,9 +21,9 @@ protocol TrackerStoreProtocol: AnyObject {
 }
 
 struct TrackerStoreUpdate {
-    let insertedIndexes: IndexSet
-    let updatedIndexes: IndexSet
-    let deletedIndexes: IndexSet
+    let insertedIndexes: [IndexPath]
+    let updatedIndexes: [IndexPath]
+    let deletedIndexes: [IndexPath]
 }
 
 protocol TrackerStoreDelegate: AnyObject {
@@ -40,9 +40,9 @@ final class TrackerStore: NSObject {
     private var predicateDate: Date?
     private var predicateString: String?
     weak var delegate: TrackerStoreDelegate?
-    private var insertedIndexes: IndexSet?
-    private var updatedIndexes: IndexSet?
-    private var deletedIndexes: IndexSet?
+    private var insertedIndexes: [IndexPath]?
+    private var updatedIndexes: [IndexPath]?
+    private var deletedIndexes: [IndexPath]?
     
     init(context: NSManagedObjectContext) {
         self.context = context
@@ -203,9 +203,9 @@ extension TrackerStore: TrackerStoreProtocol {
 // MARK: - NSFetchedResultsControllerDelegate
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        insertedIndexes = IndexSet()
-        updatedIndexes = IndexSet()
-        deletedIndexes = IndexSet()
+        insertedIndexes = []
+        updatedIndexes = []
+        deletedIndexes = []
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -225,15 +225,15 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         switch type {
         case .delete:
             if let indexPath = indexPath {
-                deletedIndexes?.insert(indexPath.item)
+                deletedIndexes?.append(indexPath)
             }
         case .insert:
             if let indexPath = newIndexPath {
-                insertedIndexes?.insert(indexPath.item)
+                insertedIndexes?.append(indexPath)
             }
         case .update:
             if let indexPath = newIndexPath {
-                updatedIndexes?.insert(indexPath.item)
+                updatedIndexes?.append(indexPath)
             }
         default:
             break
