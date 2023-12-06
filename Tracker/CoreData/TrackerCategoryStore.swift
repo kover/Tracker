@@ -94,8 +94,7 @@ private extension TrackerCategoryStore {
                   let name = $0.name,
                   let color = $0.color as? UIColor,
                   let emoji = $0.emoji,
-                  let scheduleRaw = $0.schedule,
-                  let schedule = try? JSONDecoder().decode([TrackerSchedule].self, from: scheduleRaw)
+                  let schedule = $0.schedule as? [TrackerSchedule]
             else {
                 return
             }

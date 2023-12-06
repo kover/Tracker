@@ -71,8 +71,6 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        trackerCategoryStore.changeDelegate = self
-        
         configureNavBar()
         configureSearch()
         configureCollection()
@@ -97,21 +95,20 @@ final class TrackersViewController: UIViewController {
 // MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return visibleCategories.count
+        trackerStore.numberOfSections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return visibleCategories[section].trackers.count
+        trackerStore.numberOfRowsInSection(section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, 
-                                                                   for: indexPath) as? TrackersCollectionViewCell
+                                                                   for: indexPath) as? TrackersCollectionViewCell,
+              let item = trackerStore.object(at: indexPath)
         else {
             return TrackersCollectionViewCell()
         }
-        
-        let item = visibleCategories[indexPath.section].trackers[indexPath.row]
         
         trackerCell.delegate = self
         trackerCell.setupCell(for: item, runFor: calculateCompletion(id: item.id), done: isTrackerCompletedToday(tracker: item), at: datePicker.date)
@@ -127,7 +124,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        cell.setupCell(title: visibleCategories[indexPath.section].title)
+        cell.setupCell(title: trackerStore.titleForSection(at: indexPath))
         
         return cell
     }
@@ -202,13 +199,15 @@ extension TrackersViewController: UITextFieldDelegate {
            let textRange = Range(range, in: text) {
             
             let predicate = text.replacingCharacters(in: textRange, with: string)
-            if predicate == "" {
-                trackersForSelectedDate()
-            } else {
-                trackersByPredicate(predicate)
-            }
+            trackersByPredicate(predicate)
         }
+        
         return true;
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        trackersByPredicate("")
+        return true
     }
     
     override func resignFirstResponder() -> Bool {
@@ -220,6 +219,17 @@ extension TrackersViewController: TrackerCategoryChangeDelegate {
     func didChange(_ update: TrackerCategoryStoreUpdate) {
         categories = trackerCategoryStore.getCategories()
         trackersForSelectedDate()
+    }
+}
+extension TrackersViewController: TrackerStoreDelegate {
+    func didUpdate(_ update: TrackerStoreUpdate) {
+        collectionView.performBatchUpdates {
+//            let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
+//            let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
+//            categoryTableView.insertRows(at: insertedIndexPaths, with: .automatic)
+//            categoryTableView.deleteRows(at: deletedIndexPaths, with: .fade)
+//            collectionView.insertItems(at: update.insertedIndexes.map {IndexPath($0.)})
+        }
     }
 }
 // MARK: - Private routines & layout
@@ -274,7 +284,7 @@ private extension TrackersViewController {
     }
     
     func togglePlaceholder(search: Bool = false) {        
-        if visibleCategories.count == 0 {
+        if trackerStore.numberOfSections == 0 {
             collectionView.backgroundView?.isHidden = false
         } else {
             collectionView.backgroundView?.isHidden = true
@@ -288,45 +298,14 @@ private extension TrackersViewController {
             return
         }
         
-        let selectedDay = Calendar.current.component(.weekday, from: currentDate)
-        
-        visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                let datePickerFilter = tracker.schedule.contains {
-                    $0.numberOfDay == selectedDay
-                } == true
-                
-                return datePickerFilter
-            }
-            
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(title: category.title, trackers: trackers)
-        }
+        trackerStore.selectedDate = currentDate
         
         collectionView.reloadData()
         togglePlaceholder()
     }
     
     func trackersByPredicate(_ predicate: String) {
-        let newText = predicate.lowercased()
-        
-        visibleCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                let filterTextField = newText.isEmpty || tracker.name.lowercased().contains(newText)
-                
-                return filterTextField
-            }
-            
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(title: category.title, trackers: trackers)
-        }
-        
+        trackerStore.searchPredicate = predicate.lowercased()
         collectionView.reloadData()
         togglePlaceholder()
     }
@@ -346,5 +325,4 @@ private extension TrackersViewController {
         }
         return completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
     }
-
 }

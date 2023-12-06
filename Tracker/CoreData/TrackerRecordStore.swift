@@ -147,8 +147,7 @@ private extension TrackerRecordStore {
               let name = data.name,
               let color = data.color as? UIColor,
               let emoji = data.emoji,
-              let scheduleRaw = data.schedule,
-              let schedule = try? JSONDecoder().decode([TrackerSchedule].self, from: scheduleRaw)
+              let schedule = data.schedule as? [TrackerSchedule]
         else {
             throw TrackerRecordError.failedToConvertTrackers
         }
