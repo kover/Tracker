@@ -320,7 +320,8 @@ private extension CreateHabbitViewController {
         }
         
         if indexPath.row == 0 {
-            viewController = ListCategoriesViewController(trackerCategoryStore: trackerCategoryStore)
+            let viewModel = ListCategoriesViewModel(categoryStore: trackerCategoryStore)
+            viewController = ListCategoriesViewController(viewModel: viewModel)
         } else if indexPath.row == 1 {
             viewController = ScheduleViewController()
         }
