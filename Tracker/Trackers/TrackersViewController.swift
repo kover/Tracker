@@ -216,10 +216,11 @@ extension TrackersViewController: UITextFieldDelegate {
 // MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
-        collectionView.performBatchUpdates {
-            collectionView.insertItems(at: update.insertedIndexes)
-            collectionView.deleteItems(at: update.deletedIndexes)
-        }
+        collectionView.reloadData()
+//        collectionView.performBatchUpdates {
+//            collectionView.insertItems(at: update.insertedIndexes)
+//            collectionView.deleteItems(at: update.deletedIndexes)
+//        }
     }
 }
 // MARK: - Private routines & layout

@@ -168,7 +168,7 @@ extension TrackerStore: TrackerStoreProtocol {
     }
     
     var numberOfSections: Int {
-        return fetchedResultsController.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 1
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {
