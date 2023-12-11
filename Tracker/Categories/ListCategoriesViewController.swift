@@ -117,7 +117,8 @@ extension ListCategoriesViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.setupCell(text: header)
+        
+        cell.setupCell(text: header, isSelected: viewModel.isSelected(category: category))
         
         return cell
     }
@@ -127,11 +128,12 @@ extension ListCategoriesViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension ListCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let delegate = delegate else {
+        guard let delegate = delegate,
+        let category = viewModel.categoryAt(indexPath.row) else {
             tableView.deselectRow(at: indexPath, animated: false)
             return
         }
-        delegate.updateCategory(category: viewModel.categories[indexPath.row])
+        delegate.updateCategory(category: category)
         tableView.deselectRow(at: indexPath, animated: false)
         dismiss(animated: true)
     }
@@ -176,7 +178,7 @@ private extension ListCategoriesViewController {
     }
     
     func togglePlaceholderVisibility() {
-        if viewModel.categories.count > 0 {
+        if viewModel.shouldHidePlaceholder {
             categoryTableView.isHidden = false
             placeholderLabel.isHidden = true
             placeholderImageView.isHidden = true

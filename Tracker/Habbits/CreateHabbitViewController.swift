@@ -170,7 +170,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
                 description = category?.title
             } else {
                 text = "Расписание"
-                description = scheduleToString()
+                description = scheduleToString() ?? ""
             }
             
             cell.setupCell(text: text, description: description)
@@ -321,6 +321,7 @@ private extension CreateHabbitViewController {
         
         if indexPath.row == 0 {
             let viewModel = ListCategoriesViewModel(categoryStore: trackerCategoryStore)
+            viewModel.selectedCategory = category
             viewController = ListCategoriesViewController(viewModel: viewModel)
         } else if indexPath.row == 1 {
             viewController = ScheduleViewController()

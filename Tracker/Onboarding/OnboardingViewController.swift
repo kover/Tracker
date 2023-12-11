@@ -9,20 +9,9 @@ import UIKit
 
 final class OnboardingViewController: UIPageViewController {
     
-    // MARK: - Layout items
-    private lazy var pages: [UIViewController] = {
-        let first = OnboardingPage(
-            image: UIImage(named: "OnboardingOne"),
-            textLabel: "Отслеживайте только \n то, что хотите"
-        )
-        let second = OnboardingPage(
-            image: UIImage(named: "OnboardingTwo"),
-            textLabel: "Даже если это \n не литры воды и йога"
-        )
-        
-        return [first, second]
-    }()
+    private var pages: [UIViewController] = []
     
+    // MARK: - Layout items
     private lazy var pageControl: UIPageControl = {
         let pageControl = UIPageControl()
         pageControl.translatesAutoresizingMaskIntoConstraints = false
@@ -46,6 +35,11 @@ private extension OnboardingViewController {
     func configureController() {
         dataSource = self
         delegate = self
+        
+        pages.append(OnboardingPage(
+            image: UIImage(named: "OnboardingOne"),
+            textLabel: "Отслеживайте только \n то, что хотите"
+        ))
         
         if let first = pages.first {
             setViewControllers(
@@ -90,6 +84,13 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
         guard let viewControllerIndex = pages.firstIndex(of: viewController) else { return nil }
+        
+        if pages.count < 2 {
+            pages.append(OnboardingPage(
+                image: UIImage(named: "OnboardingTwo"),
+                textLabel: "Даже если это \n не литры воды и йога"
+            ))
+        }
         
         let nextIndex = viewControllerIndex + 1
         guard nextIndex < pages.count else { return nil }

@@ -13,6 +13,12 @@ final class ListCategoriesViewModel {
         return categories.count
     }
     
+    var shouldHidePlaceholder: Bool {
+        return categories.count > 0
+    }
+    
+    var selectedCategory: TrackerCategory?
+    
     @Observable
     private(set) var categories: [TrackerCategory] = []
     
@@ -28,16 +34,24 @@ final class ListCategoriesViewModel {
         categoryStore.addCategory(TrackerCategory(title: title, trackers: []))
     }
     
-    func getCategories() {
-        self.categories = categoryStore.getCategories()
-    }
-    
     func categoryAt(_ index: Int) -> TrackerCategory? {
         return categories[index]
     }
     
+    func isSelected(category: TrackerCategory) -> Bool {
+        return category.title == selectedCategory?.title
+    }
+    
 }
 
+// MARK: - Private routines
+private extension ListCategoriesViewModel {
+    func getCategories() {
+        self.categories = categoryStore.getCategories()
+    }
+}
+
+// MARK: - TrackerCategoryStoreDelegate
 extension ListCategoriesViewModel: TrackerCategoryStoreDelegate {
     func didUpdate(_ update: TrackerCategoryStoreUpdate) {
         getCategories()

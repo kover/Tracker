@@ -217,10 +217,7 @@ extension TrackersViewController: UITextFieldDelegate {
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
         collectionView.reloadData()
-//        collectionView.performBatchUpdates {
-//            collectionView.insertItems(at: update.insertedIndexes)
-//            collectionView.deleteItems(at: update.deletedIndexes)
-//        }
+        togglePlaceholder()
     }
 }
 // MARK: - Private routines & layout
@@ -239,6 +236,8 @@ private extension TrackersViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(filterByDate), for: .valueChanged)
+        // Start from Monday
+        datePicker.calendar.firstWeekday = 2
         
         let barItem = UIBarButtonItem(customView: datePicker)
         
@@ -274,7 +273,12 @@ private extension TrackersViewController {
         ])
     }
     
-    func togglePlaceholder(search: Bool = false) {        
+    func togglePlaceholder(search: Bool = false) {
+        let isSearching = trackerStore.searchPredicate != "" && trackerStore.searchPredicate != nil
+        let placeholderText = isSearching ? "Ничего не найдено" : "Что будем отслеживать?"
+        let placeholderImage = isSearching ? UIImage(named: "EmptySearch") : UIImage(named: "TrackersPlaceholder")
+        placeholderView.updateText(placeholderText)
+        placeholderView.updateImage(placeholderImage)
         if trackerStore.numberOfSections == 0 {
             collectionView.backgroundView?.isHidden = false
         } else {

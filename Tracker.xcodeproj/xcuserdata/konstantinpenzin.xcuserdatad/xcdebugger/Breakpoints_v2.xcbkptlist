@@ -20,5 +20,53 @@
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E2A31587-1376-4941-B6DB-6C8620852D86"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tracker/Onboarding/OnboardingViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "pageViewController(_:viewControllerAfter:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E2A31587-1376-4941-B6DB-6C8620852D86 - d628fd73c1d3484c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tracker.OnboardingViewController.pageViewController(_: __C.UIPageViewController, viewControllerBefore: __C.UIViewController) -&gt; Swift.Optional&lt;__C.UIViewController&gt;"
+                  moduleName = "Tracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinpenzin/Desktop/Yandex%20Practicum/iOS/Tracker/Tracker/Onboarding/OnboardingViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "89"
+                  endingLineNumber = "89"
+                  offsetFromSymbolStart = "288">
+               </Location>
+               <Location
+                  uuid = "E2A31587-1376-4941-B6DB-6C8620852D86 - d931efac24692e5d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tracker.OnboardingViewController.pageViewController(_: __C.UIPageViewController, viewControllerAfter: __C.UIViewController) -&gt; Swift.Optional&lt;__C.UIViewController&gt;"
+                  moduleName = "Tracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/konstantinpenzin/Desktop/Yandex%20Practicum/iOS/Tracker/Tracker/Onboarding/OnboardingViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "89"
+                  endingLineNumber = "89"
+                  offsetFromSymbolStart = "444">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
