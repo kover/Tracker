@@ -15,15 +15,11 @@ final class ListCategoriesViewController: UIViewController {
 
     weak var delegate: SelectCategoryDelegate?
     
-    private let trackerCategoryStore: TrackerCategoryStoreProtocol
-    var categories: [TrackerCategory] {
-        return trackerCategoryStore.getCategories()
-    }
-    
-    init(trackerCategoryStore: TrackerCategoryStoreProtocol) {
-        self.trackerCategoryStore = trackerCategoryStore
+    private let viewModel: ListCategoriesViewModel
+        
+    init(viewModel: ListCategoriesViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        self.trackerCategoryStore.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -84,19 +80,20 @@ final class ListCategoriesViewController: UIViewController {
         return tableView
     }()
     
-    //MARK: - Lyfecycle hooks
+    //MARK: - Lifecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupSubviews()
         setupLayout()
+        bind()
     }
 }
 
 //MARK: - CreateCategoryDelegate
 extension ListCategoriesViewController: CreateCategoryDelegate {
     func createCategory(category: String) {
-        trackerCategoryStore.addCategory(TrackerCategory(title: category, trackers: []))
+        viewModel.createCategory(category)
         togglePlaceholderVisibility()
     }
 }
@@ -104,11 +101,11 @@ extension ListCategoriesViewController: CreateCategoryDelegate {
 //MARK: - UITableViewDataSource
 extension ListCategoriesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return trackerCategoryStore.numberOfRowsInSection(section)
+        return viewModel.numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let category = trackerCategoryStore.object(at: indexPath) else {
+        guard let category = viewModel.categoryAt(indexPath.row) else {
             return UITableViewCell()
         }
         let header = category.title
@@ -120,7 +117,8 @@ extension ListCategoriesViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.setupCell(text: header)
+        
+        cell.setupCell(text: header, isSelected: viewModel.isSelected(category: category))
         
         return cell
     }
@@ -130,24 +128,14 @@ extension ListCategoriesViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension ListCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let delegate = delegate else {
+        guard let delegate = delegate,
+        let category = viewModel.categoryAt(indexPath.row) else {
             tableView.deselectRow(at: indexPath, animated: false)
             return
         }
-        delegate.updateCategory(category: categories[indexPath.row])
+        delegate.updateCategory(category: category)
         tableView.deselectRow(at: indexPath, animated: false)
         dismiss(animated: true)
-    }
-}
-
-extension ListCategoriesViewController: TrackerCategoryStoreDelegate {
-    func didUpdate(_ update: TrackerCategoryStoreUpdate) {
-        categoryTableView.performBatchUpdates {
-            let insertedIndexPaths = update.insertedIndexes.map { IndexPath(item: $0, section: 0) }
-            let deletedIndexPaths = update.deletedIndexes.map { IndexPath(item: $0, section: 0) }
-            categoryTableView.insertRows(at: insertedIndexPaths, with: .automatic)
-            categoryTableView.deleteRows(at: deletedIndexPaths, with: .fade)
-        }
     }
 }
 
@@ -190,7 +178,7 @@ private extension ListCategoriesViewController {
     }
     
     func togglePlaceholderVisibility() {
-        if categories.count > 0 {
+        if viewModel.shouldHidePlaceholder {
             categoryTableView.isHidden = false
             placeholderLabel.isHidden = true
             placeholderImageView.isHidden = true
@@ -206,5 +194,11 @@ private extension ListCategoriesViewController {
         createCategoryViewController.delegate = self
         let navigatonViewController = UINavigationController(rootViewController: createCategoryViewController)
         present(navigatonViewController, animated: true)
+    }
+    
+    func bind() {
+        viewModel.$categories.bind {[weak self] _ in
+            self?.categoryTableView.reloadData()
+        }
     }
 }

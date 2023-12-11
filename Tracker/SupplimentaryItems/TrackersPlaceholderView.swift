@@ -47,5 +47,16 @@ class TrackersPlaceholderView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+}
+extension TrackersPlaceholderView {
+    func updateText(_ text: String) {
+        label.text = text
+    }
     
+    func updateImage(_ image: UIImage?) {
+        guard let image = image else {
+            return
+        }
+        imageView.image = image
+    }
 }

@@ -35,10 +35,12 @@ final class CategoryTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Cell configuration
-    func setupCell(text: String) {
+    func setupCell(text: String, isSelected: Bool) {
         nameLabel.text = text
         
         contentView.backgroundColor = UIColor(named: "Background")
+        
+        checkImageView.isHidden = !isSelected
         
         setupSubviews()
         setupLayout()

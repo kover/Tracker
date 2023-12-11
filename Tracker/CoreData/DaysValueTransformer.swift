@@ -18,11 +18,16 @@ final class DaysValueTransformer: ValueTransformer {
     }
     
     override func transformedValue(_ value: Any?) -> Any? {
-        guard let days = value as? [TrackerSchedule] else {
+        guard let days = value as? NSArray else {
             return nil
         }
         
-        return try? JSONEncoder().encode(days)
+        let val = days.map({ $0 as? TrackerSchedule })
+        
+        guard let data = try? JSONEncoder().encode(val) else {
+            return nil
+        }
+        return data
     }
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
@@ -30,7 +35,10 @@ final class DaysValueTransformer: ValueTransformer {
             return nil
         }
         
-        return try? JSONDecoder().decode([TrackerSchedule].self, from: data as Data)
+        guard let decoded = try? JSONDecoder().decode([TrackerSchedule].self, from: data as Data) else {
+            return nil
+        }
+        return NSArray(array: decoded)
     }
 }
 extension DaysValueTransformer {
