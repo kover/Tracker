@@ -23,7 +23,7 @@ final class ScheduleViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("doneButton.title", comment: "Title for the Done button"), for: .normal)
         button.addTarget(self, action: #selector(done), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
         button.setTitleColor(UIColor(named: "White"), for: .normal)
@@ -50,7 +50,7 @@ final class ScheduleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Расписание"
+        navigationItem.title = NSLocalizedString("scheduleScreen.title", comment: "Title for the schedule screen")
         
         view.backgroundColor = UIColor(named: "White")
         

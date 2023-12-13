@@ -33,7 +33,7 @@ final class TrackersViewController: UIViewController {
     // MARK: Layout items
     private let searchTextField: UISearchTextField = {
         let searchTextField = UISearchTextField(frame: .zero)
-        searchTextField.placeholder = "Поиск"
+        searchTextField.placeholder = NSLocalizedString("trackers.searchPlaceholder", comment: "Text for the placeholder on the trackers page")
         
         searchTextField.translatesAutoresizingMaskIntoConstraints = false
         
@@ -57,7 +57,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private var placeholderView: TrackersPlaceholderView = {
-        let placeholder = TrackersPlaceholderView(placeholderText: "Что будем отслеживать?", frame: .zero)
+        let placeholder = TrackersPlaceholderView(placeholderText: NSLocalizedString("trackers.placeholderViewText", comment: "Text for the empty trackers list"), frame: .zero)
         
         placeholder.translatesAutoresizingMaskIntoConstraints = false
         
@@ -275,7 +275,7 @@ private extension TrackersViewController {
     
     func togglePlaceholder(search: Bool = false) {
         let isSearching = trackerStore.searchPredicate != "" && trackerStore.searchPredicate != nil
-        let placeholderText = isSearching ? "Ничего не найдено" : "Что будем отслеживать?"
+        let placeholderText = isSearching ? NSLocalizedString("trackers.placeholderNotFound", comment: "Text for the placeholder if nothing was found") : NSLocalizedString("trackers.placeholderViewText", comment: "Text for the empty trackers list")
         let placeholderImage = isSearching ? UIImage(named: "EmptySearch") : UIImage(named: "TrackersPlaceholder")
         placeholderView.updateText(placeholderText)
         placeholderView.updateImage(placeholderImage)

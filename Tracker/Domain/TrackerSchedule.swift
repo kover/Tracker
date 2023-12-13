@@ -13,38 +13,38 @@ enum TrackerSchedule: CaseIterable, Codable {
     var dayName: String {
         switch self {
             case .Monday:
-                return "Понедельник"
+                return NSLocalizedString("scheduleMonday.full", comment: "Full name for Monday")
             case .Tuesday:
-                return "Вторник"
+                return NSLocalizedString("scheduleTuesday.full", comment: "Full name for Tuesday")
             case .Wednesday:
-                return "Среда"
+                return NSLocalizedString("scheduleWednesday.full", comment: "Full name for Wednesday")
             case .Thursday:
-                return "Четверг"
+                return NSLocalizedString("scheduleThursday.full", comment: "Full name for Thursday")
             case .Friday:
-                return "Пятница"
+                return NSLocalizedString("scheduleFriday.full", comment: "Full name for Friday")
             case .Saturday:
-                return "Суббота"
+                return NSLocalizedString("scheduleSaturday.full", comment: "Full name for Saturday")
             case .Sunday:
-                return "Воскресенье"
+                return NSLocalizedString("scheduleSunday.full", comment: "Full name for Sunday")
         }
        
     }
     var shortDayName: String {
         switch self {
             case .Monday:
-                return "Пн"
+                return NSLocalizedString("scheduleMonday.short", comment: "Short name for Monday")
             case .Tuesday:
-                return "Вт"
+                return NSLocalizedString("scheduleTuesday.short", comment: "Short name for Tuesday")
             case .Wednesday:
-                return "Ср"
+                return NSLocalizedString("scheduleWednesday.short", comment: "Short name for Wednesday")
             case .Thursday:
-                return "Чт"
+                return NSLocalizedString("scheduleThursday.short", comment: "Short name for Thursday")
             case .Friday:
-                return "Пт"
+                return NSLocalizedString("scheduleFriday.short", comment: "Short name for Friday")
             case .Saturday:
-                return "Сб"
+                return NSLocalizedString("scheduleSaturday.short", comment: "Short name for Saturday")
             case .Sunday:
-                return "Вс"
+                return NSLocalizedString("scheduleSunday.short", comment: "Short name for Sunday")
         }
     }
     var numberOfDay: Int {

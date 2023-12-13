@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031016042AB412540065BBF4 /* StatisticsViewController.swift */; };
+		03115D9B2B29ADE500847E2B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03115D9D2B29ADE500847E2B /* Localizable.strings */; };
+		03115D9F2B29ADEC00847E2B /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03115DA12B29ADEC00847E2B /* Localizable.stringsdict */; };
 		0338A4232A9E006000C1DD27 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0338A4222A9E006000C1DD27 /* AppDelegate.swift */; };
 		0338A4252A9E006000C1DD27 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0338A4242A9E006000C1DD27 /* SceneDelegate.swift */; };
 		0338A4272A9E006000C1DD27 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0338A4262A9E006000C1DD27 /* TrackersViewController.swift */; };
@@ -70,13 +72,18 @@
 
 /* Begin PBXFileReference section */
 		031016042AB412540065BBF4 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
+		03115D9A2B29ADD500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		03115D9C2B29ADE500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		03115D9E2B29ADE700847E2B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		03115DA02B29ADEC00847E2B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		03115DA22B29ADED00847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		03115DA72B29B8C300847E2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0338A41F2A9E006000C1DD27 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0338A4222A9E006000C1DD27 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0338A4242A9E006000C1DD27 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		0338A4262A9E006000C1DD27 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		0338A42B2A9E006100C1DD27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0338A42E2A9E006100C1DD27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		0338A4302A9E006100C1DD27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0338A4352A9E006100C1DD27 /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0338A4392A9E006100C1DD27 /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		0338A43F2A9E006100C1DD27 /* TrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +168,15 @@
 			path = Statistics;
 			sourceTree = "<group>";
 		};
+		03115D952B29AC2400847E2B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				03115D9D2B29ADE500847E2B /* Localizable.strings */,
+				03115DA12B29ADEC00847E2B /* Localizable.stringsdict */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		0338A4162A9E006000C1DD27 = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +200,7 @@
 		0338A4212A9E006000C1DD27 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				03115D952B29AC2400847E2B /* Resources */,
 				03A8A61B2B2711F100A8F306 /* Helpers */,
 				03A8A5EF2B26F2FA00A8F306 /* Onboarding */,
 				03BCF2A92B0A29AC00223342 /* CoreData */,
@@ -199,7 +216,7 @@
 				0338A4242A9E006000C1DD27 /* SceneDelegate.swift */,
 				0338A42B2A9E006100C1DD27 /* Assets.xcassets */,
 				0338A42D2A9E006100C1DD27 /* LaunchScreen.storyboard */,
-				0338A4302A9E006100C1DD27 /* Info.plist */,
+				03115DA72B29B8C300847E2B /* Info.plist */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -408,6 +425,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 0338A4162A9E006000C1DD27;
 			productRefGroup = 0338A4202A9E006000C1DD27 /* Products */;
@@ -427,6 +445,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				0338A42F2A9E006100C1DD27 /* LaunchScreen.storyboard in Resources */,
+				03115D9F2B29ADEC00847E2B /* Localizable.stringsdict in Resources */,
+				03115D9B2B29ADE500847E2B /* Localizable.strings in Resources */,
 				0338A42C2A9E006100C1DD27 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -525,10 +545,29 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		03115D9D2B29ADE500847E2B /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				03115D9C2B29ADE500847E2B /* ru */,
+				03115D9E2B29ADE700847E2B /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		03115DA12B29ADEC00847E2B /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				03115DA02B29ADEC00847E2B /* en */,
+				03115DA22B29ADED00847E2B /* ru */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		0338A42D2A9E006100C1DD27 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				0338A42E2A9E006100C1DD27 /* Base */,
+				03115D9A2B29ADD500847E2B /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

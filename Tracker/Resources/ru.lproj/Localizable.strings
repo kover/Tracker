@@ -1,0 +1,50 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Konstantin Penzin on 13.12.2023.
+  
+*/
+
+"daysTracked" = "%d дней";
+"onboardingButton" = "Вот это технологии!";
+"firstOnboardingMessage" = "Отслеживайте только \n то, что хотите";
+"secondOnboardingMessage" = "Даже если это \n не литры воды и йога";
+"trackers.searchPlaceholder" = "Поиск";
+"trackers.placeholderViewText" = "Что будем отслеживать?";
+"trackers.placeholderNotFound" = "Ничего не найдено";
+"trackers.title" = "Трекеры";
+"statistics.title" = "Статистика";
+"createHabbit.button" = "Привычка";
+"createIrregularEvent.button" = "Нерегулярное событие";
+"newHabbitView.title" = "Новая привычка";
+"newEventView.title" = "Новое нерегулярное событие";
+"createTrackerView.title" = "Создание трекера";
+"createButton.title" = "Создать";
+"cancelButton.title" = "Отменить";
+"categorySection.name" = "Категория";
+"scheduleSection.name" = "Расписание";
+"schedule.everyDay" = "Каждый день";
+"createTrackerPlaceholder.text" = "Введите название трекера";
+"createTrackerColorSection.title" = "Цвет";
+"emptyCategoriesPlaceholder.text" = "Привычки и события можно \n объединить по смыслу";
+"addCategoryButton.title" = "Добавить категорию";
+"categoriesList.title" = "Категории";
+"newCategoryNamePlaceholder.text" = "Введите название категории";
+"newCategoryView.title" = "Новая категория";
+"doneButton.title" = "Готово";
+"scheduleScreen.title" = "Расписание";
+"scheduleMonday.full" = "Понедельник";
+"scheduleTuesday.full" = "Вторник";
+"scheduleWednesday.full" = "Среда";
+"scheduleThursday.full" = "Четверг";
+"scheduleFriday.full" = "Пятница";
+"scheduleSaturday.full" = "Суббота";
+"scheduleSunday.full" = "Воскресенье";
+"scheduleMonday.short" = "Пн";
+"scheduleTuesday.short" = "Вт";
+"scheduleWednesday.short" = "Ср";
+"scheduleThursday.short" = "Чт";
+"scheduleFriday.short" = "Пт";
+"scheduleSaturday.short" = "Сб";
+"scheduleSunday.short" = "Вс";

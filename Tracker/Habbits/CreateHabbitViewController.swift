@@ -53,7 +53,7 @@ final class CreateHabbitViewController: UIViewController {
     private lazy var createButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(NSLocalizedString("createButton.title", comment: "The title for the create button on create habbit view"), for: .normal)
         button.setTitleColor(UIColor(named: "White"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "Gray")
@@ -70,7 +70,7 @@ final class CreateHabbitViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("cancelButton.title", comment: "The title for the cancel button on create habbit view"), for: .normal)
         button.setTitleColor(UIColor(named: "Red"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor.clear
@@ -166,10 +166,10 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
 
             if indexPath.row == 0 {
-                text = "Категория"
+                text = NSLocalizedString("categorySection.name", comment: "Name for the category section on create habbit screen")
                 description = category?.title
             } else {
-                text = "Расписание"
+                text = NSLocalizedString("scheduleSection.name", comment: "Name for the schedule section on create habbit screen")
                 description = scheduleToString() ?? ""
             }
             
@@ -368,7 +368,7 @@ private extension CreateHabbitViewController {
         
         var stringResult = ""
         if arr.count == 7 {
-            stringResult = "Каждый день"
+            stringResult = NSLocalizedString("schedule.everyDay", comment: "String to be used when all items on the schedule screen are selected")
         } else {
             let filter = arr.map { $0.shortDayName }
             stringResult = filter.joined(separator: ", ")

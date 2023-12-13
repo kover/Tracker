@@ -29,7 +29,7 @@ final class ColorsTableViewCell: UITableViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         
-        label.text = "Цвет"
+        label.text = NSLocalizedString("createTrackerColorSection.title", comment: "Color table section title for the create habbit screen")
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.textColor = UIColor(named: "Black")
         

@@ -107,7 +107,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         checkTrackerButton.backgroundColor = tracker.color
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
-        quantityLabel.text = setQuantityLabel(count: counter)
+        let localizedFormatString = NSLocalizedString("daysTracked", comment: "")
+        quantityLabel.text = String(format: localizedFormatString, counter)
         isCompleted = completed
         self.selectedDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: selectedDate))
         
@@ -182,24 +183,7 @@ private extension TrackersCollectionViewCell {
         updateCheckTrackerButton()
         delegate?.updateTrackerRecord(tracker: tracker, isCompleted: isCompleted, cell: self)
     }
-    
-    func setQuantityLabel(count: Int) -> String {
-        var dayString: String!
-        if "1".contains("\(count % 10)") {
-            dayString = "день"
-        }
-        if "234".contains("\(count % 10)") {
-            dayString = "дня"
-        }
-        if "567890".contains("\(count % 10)") {
-            dayString = "дней"
-        }
-        if 11...14 ~= count % 100 {
-            dayString = "дней"
-        }
-        return "\(count) " + dayString
-    }
-    
+        
     func updateCheckTrackerButton() {
         if isCompleted {
             checkTrackerButton.alpha = 0.5
