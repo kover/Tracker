@@ -21,6 +21,7 @@ protocol CreateHabbitViewControllerDelegate: AnyObject {
 final class CreateHabbitViewController: UIViewController {
     
     var tracker: Tracker?
+    var completedDays: Int?
     
     private var category: TrackerCategory?
     private var schedule: [TrackerSchedule]?
@@ -92,6 +93,18 @@ final class CreateHabbitViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
+    }()
+    
+    private lazy var daysCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let localizedFormatString = NSLocalizedString("daysTracked", comment: "")
+        label.text = String(format: localizedFormatString, completedDays ?? 0)
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.textColor = UIColor(named: "Black")
+        
+        return label
     }()
     
     override func viewDidLoad() {
@@ -310,17 +323,29 @@ private extension CreateHabbitViewController {
     }
     
     func setupSubviews() {
+        if tracker != nil {
+            view.addSubview(daysCountLabel)
+        }
         view.addSubview(tableView)
         view.addSubview(cancelButton)
         view.addSubview(createButton)
     }
     
     func setupLayout() {
+        let isEditingTracker = tracker != nil
+        
+        if isEditingTracker {
+            NSLayoutConstraint.activate([
+                daysCountLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                daysCountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            ])
+        }
+        
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
+            tableView.topAnchor.constraint(equalTo: isEditingTracker ? daysCountLabel.bottomAnchor : view.topAnchor, constant: 24),
             
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),

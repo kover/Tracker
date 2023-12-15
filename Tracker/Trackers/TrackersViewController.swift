@@ -364,6 +364,7 @@ private extension TrackersViewController {
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.tracker = tracker
         createHabbitViewController.title = NSLocalizedString("editHabbitView.title", comment: "The title for the edit a habbit view")
+        createHabbitViewController.completedDays = calculateCompletion(id: tracker.id)
         createHabbitViewController.delegate = self
         createHabbitViewController.cells = [
             0: ["textField"],
