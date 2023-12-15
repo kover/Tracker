@@ -149,13 +149,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		031016022AB412170065BBF4 /* Trackers */ = {
+		03099E812B2C14B2009479E5 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				03F2417D2AB594C6008F4D44 /* TrackersCollectionViewCell.swift */,
+				0352396E2B00C88A00BFCE5B /* TrackersCollectionReusableView.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		031016022AB412170065BBF4 /* Trackers */ = {
+			isa = PBXGroup;
+			children = (
+				03099E812B2C14B2009479E5 /* Cells */,
 				0338A4262A9E006000C1DD27 /* TrackersViewController.swift */,
 				03F2417B2AB45275008F4D44 /* CreateTrackerViewController.swift */,
-				0352396E2B00C88A00BFCE5B /* TrackersCollectionReusableView.swift */,
 			);
 			path = Trackers;
 			sourceTree = "<group>";

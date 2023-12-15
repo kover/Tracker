@@ -31,15 +31,6 @@ final class TrackersViewController: UIViewController {
     
     
     // MARK: Layout items
-    private let searchTextField: UISearchTextField = {
-        let searchTextField = UISearchTextField(frame: .zero)
-        searchTextField.placeholder = NSLocalizedString("trackers.searchPlaceholder", comment: "Text for the placeholder on the trackers page")
-        
-        searchTextField.translatesAutoresizingMaskIntoConstraints = false
-        
-        return searchTextField
-    }()
-    
     private let collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         
@@ -191,33 +182,17 @@ extension TrackersViewController: TrackersCollectionViewCellDelegate {
         collectionView.reloadItems(at: [indexPath])
     }
 }
-// MARK: - UITextFieldDelegate
-extension TrackersViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let text = textField.text,
-           let textRange = Range(range, in: text) {
-            
-            let predicate = text.replacingCharacters(in: textRange, with: string)
-            trackersByPredicate(predicate)
-        }
-        
-        return true;
-    }
-    
-    func textFieldShouldClear(_ textField: UITextField) -> Bool {
-        trackersByPredicate("")
-        return true
-    }
-    
-    override func resignFirstResponder() -> Bool {
-        return true
-    }
-}
 // MARK: - TrackerStoreDelegate
 extension TrackersViewController: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
         collectionView.reloadData()
         togglePlaceholder()
+    }
+}
+// MARK: - UISearchResultsUpdating
+extension TrackersViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        trackersByPredicate(searchController.searchBar.text ?? "")
     }
 }
 // MARK: - Private routines & layout
@@ -245,15 +220,11 @@ private extension TrackersViewController {
     }
     
     private func configureSearch() {
-        searchTextField.delegate = self
-        view.addSubview(searchTextField)
-        
-        NSLayoutConstraint.activate([
-            searchTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            searchTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            searchTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            searchTextField.heightAnchor.constraint(equalToConstant: 36)
-        ])
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = NSLocalizedString("trackers.searchPlaceholder", comment: "Text for the placeholder on the trackers page")
+        navigationItem.searchController = searchController
+        searchController.searchResultsUpdater = self
     }
     
     private func configureCollection() {
@@ -263,7 +234,7 @@ private extension TrackersViewController {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 24),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
