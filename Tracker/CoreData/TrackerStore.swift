@@ -14,6 +14,7 @@ protocol TrackerStoreProtocol: AnyObject {
     var selectedDate: Date? { get set }
     var searchPredicate: String? { get set }
     func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
+    func updateTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
     func titleForSection(at indexPath: IndexPath) -> String
@@ -164,6 +165,17 @@ extension TrackerStore: TrackerStoreProtocol {
 
     func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData) {
         let entity = TrackerCoreData(context: context)
+        updateTrackerEntity(entity, with: tracker, for: category)
+    }
+    
+    func updateTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData) {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "ANY id == %@", tracker.id.uuidString)
+        
+        guard let entities = try? context.fetch(request),
+              let entity = entities.first else {
+            return
+        }
         updateTrackerEntity(entity, with: tracker, for: category)
     }
     

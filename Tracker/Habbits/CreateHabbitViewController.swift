@@ -15,9 +15,12 @@ protocol CreateHabbitViewControllerDelegate: AnyObject {
         emoji: String,
         color: UIColor
     )
+    func updateTracker(tracker: Tracker, forCategory category: TrackerCategory)
 }
 
 final class CreateHabbitViewController: UIViewController {
+    
+    var tracker: Tracker?
     
     private var category: TrackerCategory?
     private var schedule: [TrackerSchedule]?
@@ -53,14 +56,20 @@ final class CreateHabbitViewController: UIViewController {
     private lazy var createButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle(NSLocalizedString("createButton.title", comment: "The title for the create button on create habbit view"), for: .normal)
+        if tracker != nil {
+            button.setTitle(NSLocalizedString("saveButton.title", comment: "The title for the save button on create habbit view"), for: .normal)
+            button.addTarget(self, action: #selector(save), for: .touchUpInside)
+        } else {
+            button.setTitle(NSLocalizedString("createButton.title", comment: "The title for the create button on create habbit view"), for: .normal)
+            button.addTarget(self, action: #selector(create), for: .touchUpInside)
+        }
+        
         button.setTitleColor(UIColor(named: "White"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "Gray")
         button.isEnabled = false
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(create), for: .touchUpInside)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -90,7 +99,7 @@ final class CreateHabbitViewController: UIViewController {
         
         setupView()
         fillSheduleIfRequired()
-
+        setupEdit()
     }
 
     @objc func create() {
@@ -110,6 +119,28 @@ final class CreateHabbitViewController: UIViewController {
                 return
             }
             rootViewController.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @objc func save() {
+        if
+            let id = tracker?.id,
+            let category = category,
+            let schedule = schedule,
+            let name = name,
+            let color = color,
+            let emoji = emoji,
+            let delegate = delegate {
+            
+            let updatedTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+            delegate.updateTracker(tracker: updatedTracker, forCategory: category)
+            
+            guard let window = UIApplication.shared.windows.first,
+                  let rootViewController = window.rootViewController else {
+                assertionFailure("Invalid configuration")
+                return
+            }
+            rootViewController.dismiss(animated: true)
         }
     }
     
@@ -151,7 +182,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(name: name)
             
             return cell
         } else if indexPath.section == 1 {
@@ -186,7 +217,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
                 
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(selectedEmoji: emoji)
             
             return cell
         } else {
@@ -199,7 +230,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
             
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(selectedColor: color)
             
             return cell
         }
@@ -263,6 +294,21 @@ extension CreateHabbitViewController: ColorsTableViewCellDelegate {
 
 //MARK: - Private declarations & layout
 private extension CreateHabbitViewController {
+    func setupEdit() {
+        guard let tracker = tracker,
+              let category = trackerCategoryStore.categoryForTracker(tracker)
+        else {
+            return
+        }
+        name = tracker.name
+        schedule = tracker.schedule
+        color = tracker.color
+        emoji = tracker.emoji
+        self.category = category
+
+        updateCreateButton()
+    }
+    
     func setupSubviews() {
         view.addSubview(tableView)
         view.addSubview(cancelButton)

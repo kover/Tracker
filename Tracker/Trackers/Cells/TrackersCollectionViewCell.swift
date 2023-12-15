@@ -21,6 +21,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private var selectedDate: Date?
     private var tracker: Tracker?
     
+    var preview: UIView?
+    
     // MARK: - Layout items
     private let colorView: UIView = {
         let view = UIView()
@@ -30,7 +32,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
     
-        
         return view
     }()
     
@@ -93,6 +94,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         
         setupSubviews()
         setupLayout()
+        
+        preview = colorView
         
         checkTrackerButton.addTarget(self, action: #selector(checkButtonTap), for: .touchUpInside)
     }

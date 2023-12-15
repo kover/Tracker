@@ -139,6 +139,63 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
 }
+// MARK: - UICollectionViewDelegate
+extension TrackersViewController: UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        
+        guard let tracker = trackerStore.object(at: indexPath)
+        else {
+            return nil
+        }
+        
+        let itemIdentifier = NSString(string: "\(indexPath.section):\(indexPath.row)")
+        
+        return UIContextMenuConfiguration(identifier: itemIdentifier, actionProvider: { actions in
+            return UIMenu(children: [
+                UIAction(title: NSLocalizedString("trackerActionPin.title", comment: "Title for the pin action")) { [weak self] _ in
+                    self?.pinTracker(tracker: tracker)
+                },
+                UIAction(title: NSLocalizedString("trackerActionEdit.title", comment: "Title for edit action")) { [weak self] _ in
+                    self?.editTracker(tracker: tracker)
+                },
+                UIAction(title: NSLocalizedString("trackerActionRemove.title", comment: "Title for remove action"), attributes: .destructive) { [weak self] _ in
+                    self?.removeTracker(tracker: tracker)
+                }
+            ])
+        })
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+
+        guard let identifier = configuration.identifier as? String else {
+            return nil
+        }
+        let components = identifier.components(separatedBy: ":")
+
+        guard let first = components.first,
+              let last = components.last,
+              let section = Int(first),
+              let row = Int(last) else {
+            return nil
+        }
+        let indexPath = IndexPath(row: row, section: section)
+
+        guard let cell = collectionView.cellForItem(at: indexPath) as? TrackersCollectionViewCell,
+              let preview = cell.preview
+        else {
+            return nil
+        }
+
+        return UITargetedPreview(view: preview)
+    }
+}
 // MARK: - CreateHabbitViewControllerDelegate
 extension TrackersViewController: CreateHabbitViewControllerDelegate {
     func addTracker(
@@ -160,6 +217,13 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
             return
         }
         trackerStore.addTracker(newTracker, for: categoryEntity)
+    }
+    
+    func updateTracker(tracker: Tracker, forCategory category: TrackerCategory) {
+        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
+            return
+        }
+        trackerStore.updateTracker(tracker, for: categoryEntity)
     }
 }
 // MARK: - TrackersCollectionViewCellDelegate
@@ -290,5 +354,32 @@ private extension TrackersViewController {
             return false
         }
         return completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
+    }
+    
+    func pinTracker(tracker: Tracker) {
+        
+    }
+    
+    func editTracker(tracker: Tracker) {
+        let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
+        createHabbitViewController.tracker = tracker
+        createHabbitViewController.title = NSLocalizedString("editHabbitView.title", comment: "The title for the edit a habbit view")
+        createHabbitViewController.delegate = self
+        createHabbitViewController.cells = [
+            0: ["textField"],
+            1: ["category","shedule"],
+            2: ["emoji"],
+            3: ["colors"]
+        ]
+
+        
+        let navigationController = UINavigationController()
+        navigationController.viewControllers = [createHabbitViewController]
+
+        present(navigationController, animated: true)
+    }
+    
+    func removeTracker(tracker: Tracker) {
+        
     }
 }

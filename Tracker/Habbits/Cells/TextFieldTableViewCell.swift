@@ -32,11 +32,16 @@ final class TextFieldTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Cell configuration
-    func setupCell() {
+    func setupCell(name: String?) {
         selectionStyle = .none
         
         setupSubviews()
         setupLayout()
+        
+        guard let name = name else {
+            return
+        }
+        nameTextField.text = name
     }
 }
 

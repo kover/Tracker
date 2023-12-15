@@ -21,6 +21,8 @@ final class EmojiTableViewCell: UITableViewCell {
                          "😇", "😡", "🥶", "🤔", "🙌", "🍔",
                          "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
     
+    private var selectedEmoji: String?
+    
     // MARK: - Layout items
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -55,8 +57,10 @@ final class EmojiTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Cell configuration
-    func setupCell() {
+    func setupCell(selectedEmoji: String?) {
         selectionStyle = .none
+        
+        self.selectedEmoji = selectedEmoji
         
         setupSubviews()
         setupLayout()
@@ -76,6 +80,12 @@ extension EmojiTableViewCell: UICollectionViewDataSource {
         }
         
         cell.setupCell(emoji: emoji[indexPath.row])
+        
+        if let selectedEmoji = selectedEmoji,
+           selectedEmoji == emoji[indexPath.row] {
+            emojiCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+            cell.backgroundColor = UIColor(named: "LightGray")
+        }
         
         return cell
     }

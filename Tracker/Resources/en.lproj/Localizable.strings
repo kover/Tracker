@@ -18,9 +18,11 @@
 "createHabbit.button" = "Habbit";
 "createIrregularEvent.button" = "Irregular Event";
 "newHabbitView.title" = "New habbit";
+"editHabbitView.title" = "Editing a habbit";
 "newEventView.title" = "New irregular event";
 "createTrackerView.title" = "Create tracker";
 "createButton.title" = "Create";
+"saveButton.title" = "Save";
 "cancelButton.title" = "Cancel";
 "categorySection.name" = "Category";
 "scheduleSection.name" = "Schedule";
@@ -48,3 +50,6 @@
 "scheduleFriday.short" = "Fri";
 "scheduleSaturday.short" = "Sat";
 "scheduleSunday.short" = "Sun";
+"trackerActionPin.title" = "Pin";
+"trackerActionEdit.title" = "Edit";
+"trackerActionRemove.title" = "Remove";

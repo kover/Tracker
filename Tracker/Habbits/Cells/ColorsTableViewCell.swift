@@ -25,6 +25,8 @@ final class ColorsTableViewCell: UITableViewCell {
                           UIColor(named: "Selection16"), UIColor(named: "Selection17"), UIColor(named: "Selection18")
     ]
     
+    var selectedColor: UIColor?
+    
     // MARK: - Layout items
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -56,8 +58,10 @@ final class ColorsTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Cell configuration
-    func setupCell() {
+    func setupCell(selectedColor: UIColor?) {
         selectionStyle = .none
+        
+        self.selectedColor = selectedColor
         
         setupSubviews()
         setupLayout()
@@ -75,6 +79,12 @@ extension ColorsTableViewCell: UICollectionViewDataSource {
         guard let cell = cell, let color = colors[indexPath.row] else { return UICollectionViewCell() }
         
         cell.setupCell(color: color)
+        if let selectedColor = selectedColor,
+           selectedColor == colors[indexPath.row] {
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
+            setCellBorder(cell: cell, color: selectedColor)
+        }
+
         
         return cell
     }

@@ -18,9 +18,11 @@
 "createHabbit.button" = "Привычка";
 "createIrregularEvent.button" = "Нерегулярное событие";
 "newHabbitView.title" = "Новая привычка";
+"editHabbitView.title" = "Редактирование привычки";
 "newEventView.title" = "Новое нерегулярное событие";
 "createTrackerView.title" = "Создание трекера";
 "createButton.title" = "Создать";
+"saveButton.title" = "Сохранить";
 "cancelButton.title" = "Отменить";
 "categorySection.name" = "Категория";
 "scheduleSection.name" = "Расписание";
@@ -48,3 +50,6 @@
 "scheduleFriday.short" = "Пт";
 "scheduleSaturday.short" = "Сб";
 "scheduleSunday.short" = "Вс";
+"trackerActionPin.title" = "Закрепить";
+"trackerActionEdit.title" = "Редактировать";
+"trackerActionRemove.title" = "Удалить";
