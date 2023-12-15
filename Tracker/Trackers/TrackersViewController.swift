@@ -157,13 +157,13 @@ extension TrackersViewController: UICollectionViewDelegate {
         return UIContextMenuConfiguration(identifier: itemIdentifier, actionProvider: { actions in
             return UIMenu(children: [
                 UIAction(title: NSLocalizedString("trackerActionPin.title", comment: "Title for the pin action")) { [weak self] _ in
-                    self?.pinTracker(tracker: tracker)
+                    self?.pinTracker(tracker)
                 },
                 UIAction(title: NSLocalizedString("trackerActionEdit.title", comment: "Title for edit action")) { [weak self] _ in
-                    self?.editTracker(tracker: tracker)
+                    self?.editTracker(tracker)
                 },
                 UIAction(title: NSLocalizedString("trackerActionRemove.title", comment: "Title for remove action"), attributes: .destructive) { [weak self] _ in
-                    self?.removeTracker(tracker: tracker)
+                    self?.removeTracker(tracker)
                 }
             ])
         })
@@ -356,11 +356,11 @@ private extension TrackersViewController {
         return completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
     }
     
-    func pinTracker(tracker: Tracker) {
+    func pinTracker(_ tracker: Tracker) {
         
     }
     
-    func editTracker(tracker: Tracker) {
+    func editTracker(_ tracker: Tracker) {
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.tracker = tracker
         createHabbitViewController.title = NSLocalizedString("editHabbitView.title", comment: "The title for the edit a habbit view")
@@ -379,7 +379,21 @@ private extension TrackersViewController {
         present(navigationController, animated: true)
     }
     
-    func removeTracker(tracker: Tracker) {
+    func removeTracker(_ tracker: Tracker) {
+        let alert = UIAlertController(
+            title: NSLocalizedString("trackers.removalConfirmation", comment: "Tracker removal confirmation message"),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(title: NSLocalizedString("trackers.removalConfirmation.confirm", comment: "Tracker removal confirm button title"),
+                                      style: .destructive) { [weak self] _ in
+            self?.trackerStore.removeTracker(tracker)
+        })
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("trackers.removalConfirmation.cancel", comment: "Tracker removal cancel button title"),
+            style: .cancel
+        ))
         
+        self.present(alert, animated: true, completion: nil)
     }
 }

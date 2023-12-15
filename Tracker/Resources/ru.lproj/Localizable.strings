@@ -13,6 +13,9 @@
 "trackers.searchPlaceholder" = "Поиск";
 "trackers.placeholderViewText" = "Что будем отслеживать?";
 "trackers.placeholderNotFound" = "Ничего не найдено";
+"trackers.removalConfirmation" = "Уверены, что хотите удалить трекер?";
+"trackers.removalConfirmation.confirm" = "Удалить";
+"trackers.removalConfirmation.cancel" = "Отмена";
 "trackers.title" = "Трекеры";
 "statistics.title" = "Статистика";
 "createHabbit.button" = "Привычка";

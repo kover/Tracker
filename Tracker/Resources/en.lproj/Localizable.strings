@@ -14,6 +14,9 @@
 "trackers.placeholderViewText" = "What are we going to track?";
 "trackers.placeholderNotFound" = "Nothing was found";
 "trackers.title" = "Trackers";
+"trackers.removalConfirmation" = "You are going to remove tracker. Are you sure?";
+"trackers.removalConfirmation.confirm" = "Remove";
+"trackers.removalConfirmation.cancel" = "Cancel";
 "statistics.title" = "Statistics";
 "createHabbit.button" = "Habbit";
 "createIrregularEvent.button" = "Irregular Event";
