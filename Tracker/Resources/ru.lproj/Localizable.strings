@@ -17,6 +17,7 @@
 "trackers.removalConfirmation.confirm" = "Удалить";
 "trackers.removalConfirmation.cancel" = "Отмена";
 "trackers.title" = "Трекеры";
+"trackers.pinnedCategory.title" = "Закреплённые";
 "statistics.title" = "Статистика";
 "createHabbit.button" = "Привычка";
 "createIrregularEvent.button" = "Нерегулярное событие";
@@ -54,5 +55,6 @@
 "scheduleSaturday.short" = "Сб";
 "scheduleSunday.short" = "Вс";
 "trackerActionPin.title" = "Закрепить";
+"trackerActionUnpin.title" = "Открепить";
 "trackerActionEdit.title" = "Редактировать";
 "trackerActionRemove.title" = "Удалить";

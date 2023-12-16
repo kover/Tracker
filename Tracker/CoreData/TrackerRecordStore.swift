@@ -152,7 +152,7 @@ private extension TrackerRecordStore {
             throw TrackerRecordError.failedToConvertTrackers
         }
 
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: data.pinned)
     }
     
     func convertRecord(_ data: TrackerRecordCoreData) throws -> TrackerRecord {

@@ -93,6 +93,7 @@ final class TrackerStore: NSObject {
         entity.schedule = NSArray(array: tracker.schedule)
         entity.scheduleString = tracker.schedule.compactMap { String($0.numberOfDay) }.joined(separator: ",")
         entity.category = category
+        entity.pinned = tracker.pinned
         saveContext()
     }
 }
@@ -111,7 +112,7 @@ private extension TrackerStore {
                 return
             }
             
-            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule))
+            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: $0.pinned))
         }
         return trackers
     }
@@ -204,7 +205,7 @@ extension TrackerStore: TrackerStoreProtocol {
             return nil
         }
         
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: tracker.pinned)
     }
     
     func titleForSection(at indexPath: IndexPath) -> String {

@@ -17,6 +17,7 @@
 "trackers.removalConfirmation" = "You are going to remove tracker. Are you sure?";
 "trackers.removalConfirmation.confirm" = "Remove";
 "trackers.removalConfirmation.cancel" = "Cancel";
+"trackers.pinnedCategory.title" = "Pinned";
 "statistics.title" = "Statistics";
 "createHabbit.button" = "Habbit";
 "createIrregularEvent.button" = "Irregular Event";
@@ -54,5 +55,6 @@
 "scheduleSaturday.short" = "Sat";
 "scheduleSunday.short" = "Sun";
 "trackerActionPin.title" = "Pin";
+"trackerActionUnpin.title" = "Unpin";
 "trackerActionEdit.title" = "Edit";
 "trackerActionRemove.title" = "Remove";

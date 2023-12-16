@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03099E832B2D57DE009479E5 /* TrackersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E822B2D57DE009479E5 /* TrackersViewModel.swift */; };
 		031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031016042AB412540065BBF4 /* StatisticsViewController.swift */; };
 		03115D9B2B29ADE500847E2B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03115D9D2B29ADE500847E2B /* Localizable.strings */; };
 		03115D9F2B29ADEC00847E2B /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03115DA12B29ADEC00847E2B /* Localizable.stringsdict */; };
@@ -71,6 +72,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03099E822B2D57DE009479E5 /* TrackersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewModel.swift; sourceTree = "<group>"; };
 		031016042AB412540065BBF4 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		03115D9A2B29ADD500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		03115D9C2B29ADE500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				03099E812B2C14B2009479E5 /* Cells */,
 				0338A4262A9E006000C1DD27 /* TrackersViewController.swift */,
 				03F2417B2AB45275008F4D44 /* CreateTrackerViewController.swift */,
+				03099E822B2D57DE009479E5 /* TrackersViewModel.swift */,
 			);
 			path = Trackers;
 			sourceTree = "<group>";
@@ -495,6 +498,7 @@
 				03C15B232AFDFBFD005829E4 /* ColorCollectionViewCell.swift in Sources */,
 				031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */,
 				03F914312B1640BE001AB00B /* TrackerCategoryProvider.swift in Sources */,
+				03099E832B2D57DE009479E5 /* TrackersViewModel.swift in Sources */,
 				0352396F2B00C88A00BFCE5B /* TrackersCollectionReusableView.swift in Sources */,
 				03BCF2A52B0A241700223342 /* DaysValueTransformer.swift in Sources */,
 				03D5D5B82B18DC46006F1DD9 /* UIColorValueTransformer.swift in Sources */,

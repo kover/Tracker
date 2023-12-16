@@ -10,18 +10,15 @@ import UIKit
 final class TrackersViewController: UIViewController {
     
     // MARK: - Data structures
-    private var completedTrackers: [TrackerRecord] = []
     private var currentDate: Date?
     
     // MARK: - Stores
-    private let trackerStore: TrackerStoreProtocol
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
-    private let trackerRecordStore: TrackerRecordStoreProtocol
+    private let viewModel: TrackersViewModel
     
-    init(trackerStore: TrackerStoreProtocol, trackerCategoryStore: TrackerCategoryStoreProtocol, trackerRecordStore: TrackerRecordStoreProtocol) {
-        self.trackerStore = trackerStore
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel) {
         self.trackerCategoryStore = trackerCategoryStore
-        self.trackerRecordStore = trackerRecordStore
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,14 +57,12 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        trackerStore.delegate = self
-        
         configureNavBar()
         configureSearch()
         configureCollection()
         
-        completedTrackers = trackerRecordStore.getRecords()
         trackersForSelectedDate()
+        bind()
     }
     
     @objc func createTracker() {
@@ -85,23 +80,28 @@ final class TrackersViewController: UIViewController {
 // MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        trackerStore.numberOfSections
+        viewModel.numberOfSections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        trackerStore.numberOfRowsInSection(section)
+        viewModel.numberOfItemsInSection(section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let trackerCell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackersCollectionViewCell.trackersCollectionViewCellIdentifier, 
-                                                                   for: indexPath) as? TrackersCollectionViewCell,
-              let item = trackerStore.object(at: indexPath)
+                                                                   for: indexPath) as? TrackersCollectionViewCell
         else {
             return TrackersCollectionViewCell()
         }
         
+        let item = viewModel.item(at: indexPath.row, in: indexPath.section)
         trackerCell.delegate = self
-        trackerCell.setupCell(for: item, runFor: calculateCompletion(id: item.id), done: isTrackerCompletedToday(tracker: item), at: datePicker.date)
+        trackerCell.setupCell(
+            for: item,
+            runFor: calculateCompletion(id: item.id),
+            done: isTrackerCompletedToday(tracker: item),
+            at: datePicker.date
+        )
         return trackerCell
     }
     
@@ -114,7 +114,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        cell.setupCell(title: trackerStore.titleForSection(at: indexPath))
+        cell.setupCell(title: viewModel.titleForSection(indexPath.section))
         
         return cell
     }
@@ -147,17 +147,17 @@ extension TrackersViewController: UICollectionViewDelegate {
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
         
-        guard let tracker = trackerStore.object(at: indexPath)
-        else {
-            return nil
-        }
+        let tracker = viewModel.item(at: indexPath.row, in: indexPath.section)
         
         let itemIdentifier = NSString(string: "\(indexPath.section):\(indexPath.row)")
         
         return UIContextMenuConfiguration(identifier: itemIdentifier, actionProvider: { actions in
             return UIMenu(children: [
-                UIAction(title: NSLocalizedString("trackerActionPin.title", comment: "Title for the pin action")) { [weak self] _ in
-                    self?.pinTracker(tracker)
+                UIAction(
+                    title: tracker.pinned
+                    ? NSLocalizedString("trackerActionUnpin.title", comment: "Title for the unpin action")
+                    : NSLocalizedString("trackerActionPin.title", comment: "Title for the pin action")) { [weak self] _ in
+                    self?.togglePinForTracker(tracker)
                 },
                 UIAction(title: NSLocalizedString("trackerActionEdit.title", comment: "Title for edit action")) { [weak self] _ in
                     self?.editTracker(tracker)
@@ -210,55 +210,31 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
             name: name,
             color: color,
             emoji: emoji,
-            schedule: schedule
+            schedule: schedule,
+            pinned: false
         )
         
-        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
-            return
-        }
-        trackerStore.addTracker(newTracker, for: categoryEntity)
+        viewModel.addTracker(newTracker, into: category)
     }
     
     func updateTracker(tracker: Tracker, forCategory category: TrackerCategory) {
-        guard let categoryEntity = trackerCategoryStore.entityFor(category: category) else {
-            return
-        }
-        trackerStore.updateTracker(tracker, for: categoryEntity)
+        viewModel.updateTracker(tracker, for: category)
     }
 }
 // MARK: - TrackersCollectionViewCellDelegate
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
-        guard
-            let indexPath = collectionView.indexPath(for: cell),
-            let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date)),
-            let trackerEntity = trackerStore.getEntityFor(tracker: tracker)
-        else {
-            return
-        }
-        if isCompleted {
-            trackerRecordStore.check(tracker: trackerEntity, for: date)
-        } else {
-            trackerRecordStore.uncheck(tracker: trackerEntity, for: date)
-        }
-        
-        completedTrackers = trackerRecordStore.getRecords()
-        collectionView.reloadItems(at: [indexPath])
+        viewModel.updateRecordFor(tracker: tracker, at: datePicker.date, withCompletion: isCompleted)
     }
 }
-// MARK: - TrackerStoreDelegate
-extension TrackersViewController: TrackerStoreDelegate {
-    func didUpdate(_ update: TrackerStoreUpdate) {
-        collectionView.reloadData()
-        togglePlaceholder()
-    }
-}
+
 // MARK: - UISearchResultsUpdating
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         trackersByPredicate(searchController.searchBar.text ?? "")
     }
 }
+
 // MARK: - Private routines & layout
 private extension TrackersViewController {
 
@@ -309,12 +285,12 @@ private extension TrackersViewController {
     }
     
     func togglePlaceholder(search: Bool = false) {
-        let isSearching = trackerStore.searchPredicate != "" && trackerStore.searchPredicate != nil
+        let isSearching = viewModel.searchPredicate != ""
         let placeholderText = isSearching ? NSLocalizedString("trackers.placeholderNotFound", comment: "Text for the placeholder if nothing was found") : NSLocalizedString("trackers.placeholderViewText", comment: "Text for the empty trackers list")
         let placeholderImage = isSearching ? UIImage(named: "EmptySearch") : UIImage(named: "TrackersPlaceholder")
         placeholderView.updateText(placeholderText)
         placeholderView.updateImage(placeholderImage)
-        if trackerStore.numberOfSections == 0 {
+        if viewModel.numberOfSections == 0 {
             collectionView.backgroundView?.isHidden = false
         } else {
             collectionView.backgroundView?.isHidden = true
@@ -328,20 +304,17 @@ private extension TrackersViewController {
             return
         }
         
-        trackerStore.selectedDate = currentDate
-        
-        collectionView.reloadData()
+        viewModel.selectedDate = currentDate
         togglePlaceholder()
     }
     
     func trackersByPredicate(_ predicate: String) {
-        trackerStore.searchPredicate = predicate.lowercased()
-        collectionView.reloadData()
+        viewModel.searchPredicate = predicate.lowercased()
         togglePlaceholder()
     }
     
     func calculateCompletion(id: UUID) -> Int {
-        return completedTrackers.reduce(0) { partialResult, record in
+        return viewModel.completedTrackers.reduce(0) { partialResult, record in
             if record.tracker.id == id {
                 return partialResult + 1
             }
@@ -353,11 +326,23 @@ private extension TrackersViewController {
         guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: datePicker.date)) else {
             return false
         }
-        return completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
+        return viewModel.completedTrackers.contains { $0.date.compare(date) == .orderedSame && $0.tracker.id == tracker.id }
     }
     
-    func pinTracker(_ tracker: Tracker) {
+    func togglePinForTracker(_ tracker: Tracker) {
+        guard let category = viewModel.categoryFor(tracker: tracker) else {
+            return
+        }
+        let newTracker = Tracker(
+            id: tracker.id,
+            name: tracker.name,
+            color: tracker.color,
+            emoji: tracker.emoji,
+            schedule: tracker.schedule,
+            pinned: !tracker.pinned
+        )
         
+        viewModel.updateTracker(newTracker, for: category)
     }
     
     func editTracker(_ tracker: Tracker) {
@@ -388,7 +373,7 @@ private extension TrackersViewController {
         )
         alert.addAction(UIAlertAction(title: NSLocalizedString("trackers.removalConfirmation.confirm", comment: "Tracker removal confirm button title"),
                                       style: .destructive) { [weak self] _ in
-            self?.trackerStore.removeTracker(tracker)
+            self?.viewModel.removeTracker(tracker)
         })
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("trackers.removalConfirmation.cancel", comment: "Tracker removal cancel button title"),
@@ -396,5 +381,12 @@ private extension TrackersViewController {
         ))
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func bind() {
+        viewModel.$visibleCategories.bind { [weak self] _ in
+            self?.collectionView.reloadData()
+            self?.togglePlaceholder()
+        }
     }
 }

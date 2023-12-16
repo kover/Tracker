@@ -24,10 +24,15 @@ final class TabBarController: UITabBarController {
         let trackerCategoryStore = TrackerCategoryStore()
         let trackerRecordStore = TrackerRecordStore()
         
-        let trackersViewController = TrackersViewController(
+        let trackersViewModel = TrackersViewModel(
+            categoryStore: trackerCategoryStore,
             trackerStore: trackerStore,
+            recordStore: trackerRecordStore
+        )
+        
+        let trackersViewController = TrackersViewController(
             trackerCategoryStore: trackerCategoryStore,
-            trackerRecordStore: trackerRecordStore
+            viewModel: trackersViewModel
         )
         let statisticsViewController = StatisticsViewController()
         

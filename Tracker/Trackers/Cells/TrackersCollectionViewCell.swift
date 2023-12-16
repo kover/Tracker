@@ -88,6 +88,16 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    private lazy var pinImageView: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        
+        image.image = UIImage(named: "Pin")
+        image.isHidden = false
+        
+        return image
+    }()
+    
     // MARK: - Lifecycle hooks
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -114,6 +124,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         quantityLabel.text = String(format: localizedFormatString, counter)
         isCompleted = completed
         self.selectedDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: selectedDate))
+        pinImageView.isHidden = !tracker.pinned
         
         updateCheckTrackerButton()
     }
@@ -132,6 +143,7 @@ private extension TrackersCollectionViewCell {
         emojiWrapper.addSubview(emojiLabel)
         colorView.addSubview(emojiWrapper)
         colorView.addSubview(titleLabel)
+        colorView.addSubview(pinImageView)
         
         contentView.addSubview(colorView)
         contentView.addSubview(checkTrackerButton)
@@ -147,6 +159,11 @@ private extension TrackersCollectionViewCell {
             
             emojiLabel.centerXAnchor.constraint(equalTo: emojiWrapper.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiWrapper.centerYAnchor),
+            
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinImageView.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4),
             
             emojiWrapper.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
             emojiWrapper.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),

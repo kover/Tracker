@@ -143,9 +143,11 @@ final class CreateHabbitViewController: UIViewController {
             let name = name,
             let color = color,
             let emoji = emoji,
-            let delegate = delegate {
+            let delegate = delegate,
+            let pinned = tracker?.pinned
+        {
             
-            let updatedTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+            let updatedTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: pinned)
             delegate.updateTracker(tracker: updatedTracker, forCategory: category)
             
             guard let window = UIApplication.shared.windows.first,

@@ -100,7 +100,7 @@ private extension TrackerCategoryStore {
                 return
             }
             
-            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule))
+            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: $0.pinned))
         }
         return trackers
     }
