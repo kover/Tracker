@@ -58,3 +58,4 @@
 "trackerActionUnpin.title" = "Открепить";
 "trackerActionEdit.title" = "Редактировать";
 "trackerActionRemove.title" = "Удалить";
+"statistics.noStatistics" = "Анализировать пока нечего";

@@ -58,3 +58,4 @@
 "trackerActionUnpin.title" = "Unpin";
 "trackerActionEdit.title" = "Edit";
 "trackerActionRemove.title" = "Remove";
+"statistics.noStatistics" = "Nothing to analyze yet";

@@ -36,7 +36,7 @@ final class TabBarController: UITabBarController {
             viewModel: trackersViewModel,
             analyticsService: analyticsService
         )
-        let statisticsViewController = StatisticsViewController()
+        let statisticsViewController = StatisticsViewController(recordStore: trackerRecordStore)
         
         trackersViewController.navigationItem.title = NSLocalizedString("trackers.title", comment: "The title for the trackers page")
         
