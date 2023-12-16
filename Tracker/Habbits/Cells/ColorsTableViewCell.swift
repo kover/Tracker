@@ -79,8 +79,10 @@ extension ColorsTableViewCell: UICollectionViewDataSource {
         guard let cell = cell, let color = colors[indexPath.row] else { return UICollectionViewCell() }
         
         cell.setupCell(color: color)
+                
         if let selectedColor = selectedColor,
-           selectedColor == colors[indexPath.row] {
+           let currentColor = colors[indexPath.row],
+           selectedColor == currentColor {
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
             setCellBorder(cell: cell, color: selectedColor)
         }

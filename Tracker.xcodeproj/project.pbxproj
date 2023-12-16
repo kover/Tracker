@@ -14,6 +14,7 @@
 		03099E8D2B2DF0C2009479E5 /* AnalyticsScreens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E8C2B2DF0C2009479E5 /* AnalyticsScreens.swift */; };
 		03099E8F2B2DF1E7009479E5 /* AnalyticsItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E8E2B2DF1E7009479E5 /* AnalyticsItems.swift */; };
 		03099E912B2DF720009479E5 /* AnalyticsParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E902B2DF720009479E5 /* AnalyticsParameter.swift */; };
+		03099E942B2E2528009479E5 /* UIColor+Comparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E932B2E2528009479E5 /* UIColor+Comparison.swift */; };
 		031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031016042AB412540065BBF4 /* StatisticsViewController.swift */; };
 		03115D9B2B29ADE500847E2B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03115D9D2B29ADE500847E2B /* Localizable.strings */; };
 		03115D9F2B29ADEC00847E2B /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03115DA12B29ADEC00847E2B /* Localizable.stringsdict */; };
@@ -87,6 +88,7 @@
 		03099E8C2B2DF0C2009479E5 /* AnalyticsScreens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsScreens.swift; sourceTree = "<group>"; };
 		03099E8E2B2DF1E7009479E5 /* AnalyticsItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsItems.swift; sourceTree = "<group>"; };
 		03099E902B2DF720009479E5 /* AnalyticsParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsParameter.swift; sourceTree = "<group>"; };
+		03099E932B2E2528009479E5 /* UIColor+Comparison.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Comparison.swift"; sourceTree = "<group>"; };
 		031016042AB412540065BBF4 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		03115D9A2B29ADD500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		03115D9C2B29ADE500847E2B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -199,6 +201,14 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
+		03099E922B2E2514009479E5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				03099E932B2E2528009479E5 /* UIColor+Comparison.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		031016022AB412170065BBF4 /* Trackers */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,6 +262,7 @@
 		0338A4212A9E006000C1DD27 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				03099E922B2E2514009479E5 /* Extensions */,
 				03099E892B2DEF7D009479E5 /* Analytics */,
 				03115D952B29AC2400847E2B /* Resources */,
 				03A8A61B2B2711F100A8F306 /* Helpers */,
@@ -680,6 +691,7 @@
 				03099E8F2B2DF1E7009479E5 /* AnalyticsItems.swift in Sources */,
 				031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */,
 				03099E882B2DC7B4009479E5 /* AnalyticsService.swift in Sources */,
+				03099E942B2E2528009479E5 /* UIColor+Comparison.swift in Sources */,
 				03F914312B1640BE001AB00B /* TrackerCategoryProvider.swift in Sources */,
 				03099E912B2DF720009479E5 /* AnalyticsParameter.swift in Sources */,
 				03099E832B2D57DE009479E5 /* TrackersViewModel.swift in Sources */,
