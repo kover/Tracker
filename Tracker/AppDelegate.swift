@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         DaysValueTransformer.register()
         UIColorValueTransformer.register()
+        AnalyticsService.activate()
         return true
     }
 

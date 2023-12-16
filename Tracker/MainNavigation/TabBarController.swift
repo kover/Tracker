@@ -23,6 +23,7 @@ final class TabBarController: UITabBarController {
         let trackerStore = TrackerStore()
         let trackerCategoryStore = TrackerCategoryStore()
         let trackerRecordStore = TrackerRecordStore()
+        let analyticsService = AnalyticsService()
         
         let trackersViewModel = TrackersViewModel(
             categoryStore: trackerCategoryStore,
@@ -32,7 +33,8 @@ final class TabBarController: UITabBarController {
         
         let trackersViewController = TrackersViewController(
             trackerCategoryStore: trackerCategoryStore,
-            viewModel: trackersViewModel
+            viewModel: trackersViewModel,
+            analyticsService: analyticsService
         )
         let statisticsViewController = StatisticsViewController()
         

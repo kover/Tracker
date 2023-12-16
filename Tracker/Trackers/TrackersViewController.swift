@@ -15,10 +15,12 @@ final class TrackersViewController: UIViewController {
     // MARK: - Stores
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
     private let viewModel: TrackersViewModel
+    private let analyticsService: AnalyticsService
     
-    init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel) {
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel, analyticsService: AnalyticsService) {
         self.trackerCategoryStore = trackerCategoryStore
         self.viewModel = viewModel
+        self.analyticsService = analyticsService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,9 +65,18 @@ final class TrackersViewController: UIViewController {
         
         trackersForSelectedDate()
         bind()
+        
+        analyticsService.report(event: .Open, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue ])
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        analyticsService.report(event: .Close, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue ])
     }
     
     @objc func createTracker() {
+        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.AddTracker.rawValue ])
         let createTrackerViewController = CreateTrackerViewController(trackerCategoryStore: trackerCategoryStore)
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController()
@@ -224,6 +235,7 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
 // MARK: - TrackersCollectionViewCellDelegate
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
+        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Record.rawValue ])
         viewModel.updateRecordFor(tracker: tracker, at: datePicker.date, withCompletion: isCompleted)
     }
 }
@@ -346,6 +358,8 @@ private extension TrackersViewController {
     }
     
     func editTracker(_ tracker: Tracker) {
+        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Edit.rawValue ])
+        
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.tracker = tracker
         createHabbitViewController.title = NSLocalizedString("editHabbitView.title", comment: "The title for the edit a habbit view")
@@ -366,6 +380,8 @@ private extension TrackersViewController {
     }
     
     func removeTracker(_ tracker: Tracker) {
+        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Remove.rawValue ])
+        
         let alert = UIAlertController(
             title: NSLocalizedString("trackers.removalConfirmation", comment: "Tracker removal confirmation message"),
             message: nil,
