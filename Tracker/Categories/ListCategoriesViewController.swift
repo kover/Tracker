@@ -58,7 +58,7 @@ final class ListCategoriesViewController: UIViewController {
         button.setTitle(NSLocalizedString("addCategoryButton.title", comment: "Title for the add category button on the categories list and create category screens"), for: .normal)
         button.addTarget(self, action: #selector(addCategory), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         
@@ -72,7 +72,7 @@ final class ListCategoriesViewController: UIViewController {
         tableView.rowHeight = 75
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = UIColor(named: "MainBackground")
         
         return tableView
     }()
@@ -139,7 +139,7 @@ extension ListCategoriesViewController: UITableViewDelegate {
 //MARK: - Private routines & layout
 private extension ListCategoriesViewController {
     func setupSubviews() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         navigationItem.title = NSLocalizedString("categoriesList.title", comment: "Title for the categories list screen")
 

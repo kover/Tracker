@@ -26,7 +26,7 @@ final class ScheduleViewController: UIViewController {
         button.setTitle(NSLocalizedString("doneButton.title", comment: "Title for the Done button"), for: .normal)
         button.addTarget(self, action: #selector(done), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         
@@ -40,7 +40,7 @@ final class ScheduleViewController: UIViewController {
         tableView.rowHeight = 75
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = UIColor(named: "MainBackground")
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         
         return tableView
@@ -52,7 +52,7 @@ final class ScheduleViewController: UIViewController {
         
         navigationItem.title = NSLocalizedString("scheduleScreen.title", comment: "Title for the schedule screen")
         
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         if let schedule = schedule {
             selectedDays = schedule

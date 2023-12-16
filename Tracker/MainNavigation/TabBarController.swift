@@ -16,7 +16,7 @@ final class TabBarController: UITabBarController {
     }
     
     private func configureTabs() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = .systemBackground
         tabBar.layer.borderColor = UIColor(named: "Black")?.cgColor
         tabBar.layer.borderWidth = 0.2
         

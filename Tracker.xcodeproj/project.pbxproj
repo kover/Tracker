@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		03099E832B2D57DE009479E5 /* TrackersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03099E822B2D57DE009479E5 /* TrackersViewModel.swift */; };
+		03099E862B2DAD82009479E5 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 03099E852B2DAD82009479E5 /* SnapshotTesting */; };
 		031016052AB412540065BBF4 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031016042AB412540065BBF4 /* StatisticsViewController.swift */; };
 		03115D9B2B29ADE500847E2B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03115D9D2B29ADE500847E2B /* Localizable.strings */; };
 		03115D9F2B29ADEC00847E2B /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03115DA12B29ADEC00847E2B /* Localizable.stringsdict */; };
@@ -138,6 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03099E862B2DAD82009479E5 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +386,9 @@
 				0338A4372A9E006100C1DD27 /* PBXTargetDependency */,
 			);
 			name = TrackerTests;
+			packageProductDependencies = (
+				03099E852B2DAD82009479E5 /* SnapshotTesting */,
+			);
 			productName = TrackerTests;
 			productReference = 0338A4352A9E006100C1DD27 /* TrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -439,6 +444,9 @@
 				ru,
 			);
 			mainGroup = 0338A4162A9E006000C1DD27;
+			packageReferences = (
+				03099E842B2DAD82009479E5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+			);
 			productRefGroup = 0338A4202A9E006000C1DD27 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -881,6 +889,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		03099E842B2DAD82009479E5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.15.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		03099E852B2DAD82009479E5 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 03099E842B2DAD82009479E5 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		03BCF2A62B0A296100223342 /* Trackers.xcdatamodeld */ = {

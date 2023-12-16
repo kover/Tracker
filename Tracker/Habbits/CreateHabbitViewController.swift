@@ -48,7 +48,7 @@ final class CreateHabbitViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 75
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = UIColor(named: "MainBackground")
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         
         return tableView
@@ -65,7 +65,7 @@ final class CreateHabbitViewController: UIViewController {
             button.addTarget(self, action: #selector(create), for: .touchUpInside)
         }
         
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "Gray")
         button.isEnabled = false
@@ -362,7 +362,7 @@ private extension CreateHabbitViewController {
     }
     
     func setupView() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         tableView.register(TextFieldTableViewCell.self, forCellReuseIdentifier: TextFieldTableViewCell.textFieldTableViewCellIdentifier)
         tableView.register(HabbitSetupTableViewCell.self, forCellReuseIdentifier: HabbitSetupTableViewCell.habbitSetupTableViewCellIdentifier)

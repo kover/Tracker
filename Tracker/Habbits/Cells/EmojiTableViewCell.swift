@@ -109,6 +109,7 @@ extension EmojiTableViewCell: UICollectionViewDelegate {
 // MARK: - Layout configuration
 private extension EmojiTableViewCell {
     func setupSubviews() {
+        contentView.backgroundColor = UIColor(named: "MainBackground")
         contentView.addSubview(titleLabel)
         contentView.addSubview(emojiCollectionView)
     }

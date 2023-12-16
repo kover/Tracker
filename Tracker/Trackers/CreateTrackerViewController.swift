@@ -30,6 +30,7 @@ final class CreateTrackerViewController: UIViewController {
         button.setTitle(NSLocalizedString("createHabbit.button", comment: "The title for the create habbit button"), for: .normal)
         button.addTarget(self, action: #selector(createHabbit), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         
@@ -43,6 +44,7 @@ final class CreateTrackerViewController: UIViewController {
         button.setTitle(NSLocalizedString("createIrregularEvent.button", comment: "The title for the create irregular event button"), for: .normal)
         button.addTarget(self, action: #selector(createIrregularEvent), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         
@@ -54,7 +56,7 @@ final class CreateTrackerViewController: UIViewController {
         super.viewDidLoad()
         title = NSLocalizedString("createTrackerView.title", comment: "The title for the create tracker view")
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         setupSubviews()
         setupLayout()

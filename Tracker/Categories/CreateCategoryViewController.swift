@@ -40,7 +40,7 @@ final class CreateCategoryViewController: UIViewController {
         button.setTitle(NSLocalizedString("addCategoryButton.title", comment: "Title for the add category button on the categories list and create category screens"), for: .normal)
         button.addTarget(self, action: #selector(done), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Gray")
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.isEnabled = false
@@ -54,7 +54,7 @@ final class CreateCategoryViewController: UIViewController {
         
         navigationItem.title = NSLocalizedString("newCategoryView.title", comment: "Title for the create category screen")
         
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         setupSubviews()
         setupLayout()

@@ -111,6 +111,7 @@ extension ColorsTableViewCell: UICollectionViewDelegate {
 private extension ColorsTableViewCell {
     
     func setupSubviews() {
+        contentView.backgroundColor = UIColor(named: "MainBackground")
         contentView.addSubview(titleLabel)
         contentView.addSubview(colorsCollectionView)
     }
