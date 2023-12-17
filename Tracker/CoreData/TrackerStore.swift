@@ -20,6 +20,7 @@ protocol TrackerStoreProtocol: AnyObject {
     func object(at: IndexPath) -> Tracker?
     func titleForSection(at indexPath: IndexPath) -> String
     func getEntityFor(tracker: Tracker) -> TrackerCoreData?
+    func getTrackers() -> [Tracker]
 }
 
 struct TrackerStoreUpdate {
@@ -128,6 +129,16 @@ private extension TrackerStore {
 }
 // MARK: - TrackerStoreProtocol
 extension TrackerStore: TrackerStoreProtocol {
+    
+    func getTrackers() -> [Tracker] {
+        guard
+            let objects = fetchedResultsController.fetchedObjects
+        else {
+            return []
+        }
+        
+        return self.convertFetchedTrackers(objects)
+    }
     
     var selectedDate: Date? {
         set {

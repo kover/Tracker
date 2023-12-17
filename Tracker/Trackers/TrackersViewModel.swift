@@ -34,8 +34,20 @@ final class TrackersViewModel {
             predicateDate
         }
     }
+    
+    private var qFilter: Filter?
+    var quickFilter: Filter? {
+        set {
+            qFilter = newValue
+            setupCollectionData()
+        }
+        get {
+            qFilter
+        }
+    }
 
     private var categories: [TrackerCategory] = []
+    private var trackers: [Tracker] = []
     
     @Observable
     private(set) var visibleCategories: [TrackerCategory] = []
@@ -52,6 +64,7 @@ final class TrackersViewModel {
         self.recordStore = recordStore
         trackerStore.delegate = self
         self.completedTrackers = recordStore.getRecords()
+        self.trackers = trackerStore.getTrackers()
         getCategories()
     }
     
@@ -105,6 +118,20 @@ private extension TrackersViewModel {
             }.filter { tracker in
                 tracker.schedule.contains { $0.numberOfDay == selectDay }
             }.filter { predicateString == "" ? true : $0.name.lowercased().contains(predicateString) }
+                .filter { tracker in
+                    switch (quickFilter) {
+                    case .completedTrackers:
+                        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate ?? Date())) else {
+                            return true
+                        }
+                        return completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
+                    case .uncompletedTrackers:
+                        let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate ?? Date()))
+                        return !completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
+                    default:
+                        return true
+                    }
+                }
             
             if categoryTrackers.count == 0 {
                 return nil
@@ -166,6 +193,7 @@ extension TrackersViewModel {
 extension TrackersViewModel: TrackerStoreDelegate {
     func didUpdate(_ update: TrackerStoreUpdate) {
         getCategories()
+        completedTrackers = recordStore.getRecords()
         setupCollectionData()
     }
 }

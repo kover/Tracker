@@ -18,6 +18,7 @@
 "trackers.removalConfirmation.confirm" = "Remove";
 "trackers.removalConfirmation.cancel" = "Cancel";
 "trackers.pinnedCategory.title" = "Pinned";
+"trackers.filtersButton.title" = "Filters";
 "statistics.title" = "Statistics";
 "createHabbit.button" = "Habbit";
 "createIrregularEvent.button" = "Irregular Event";
@@ -59,3 +60,8 @@
 "trackerActionEdit.title" = "Edit";
 "trackerActionRemove.title" = "Remove";
 "statistics.noStatistics" = "Nothing to analyze yet";
+"filters.title" = "Filters";
+"filter.allTrackers" = "All trackers";
+"filter.todayTrackers" = "Today's trackers";
+"filter.completed" = "Completed";
+"filter.uncompleted" = "Uncompleted";

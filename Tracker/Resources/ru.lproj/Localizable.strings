@@ -18,6 +18,7 @@
 "trackers.removalConfirmation.cancel" = "Отмена";
 "trackers.title" = "Трекеры";
 "trackers.pinnedCategory.title" = "Закреплённые";
+"trackers.filtersButton.title" = "Фильтры";
 "statistics.title" = "Статистика";
 "createHabbit.button" = "Привычка";
 "createIrregularEvent.button" = "Нерегулярное событие";
@@ -59,3 +60,8 @@
 "trackerActionEdit.title" = "Редактировать";
 "trackerActionRemove.title" = "Удалить";
 "statistics.noStatistics" = "Анализировать пока нечего";
+"filters.title" = "Фильтры";
+"filter.allTrackers" = "Все трекеры";
+"filter.todayTrackers" = "Трекеры на сегодня";
+"filter.completed" = "Завершённые";
+"filter.uncompleted" = "Не завершённые";

@@ -16,6 +16,7 @@ final class TrackersViewController: UIViewController {
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
     private let viewModel: TrackersViewModel
     private let analyticsService: AnalyticsService
+    private var selectedFilter: Filter?
     
     init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel, analyticsService: AnalyticsService) {
         self.trackerCategoryStore = trackerCategoryStore
@@ -54,6 +55,20 @@ final class TrackersViewController: UIViewController {
         return placeholder
     }()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        button.setTitle(NSLocalizedString("trackers.filtersButton.title", comment: "Title for the filters button"), for: .normal)
+        button.backgroundColor = UIColor(named: "Blue")
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17.0, weight: .regular)
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(showFilters), for: .touchUpInside)
+        
+        return button
+    }()
+    
     private let datePicker = UIDatePicker()
     
     override func viewDidLoad() {
@@ -62,6 +77,7 @@ final class TrackersViewController: UIViewController {
         configureNavBar()
         configureSearch()
         configureCollection()
+        configureFilters()
         
         trackersForSelectedDate()
         bind()
@@ -86,6 +102,19 @@ final class TrackersViewController: UIViewController {
     
     @objc func filterByDate() {
         trackersForSelectedDate()
+    }
+    
+    @objc
+    func showFilters() {
+        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Filter.rawValue ])
+        
+        let filtersViewController = FiltersViewController()
+        filtersViewController.delegate = self
+        filtersViewController.selectedFilter = selectedFilter
+        
+        let navigationController = UINavigationController()
+        navigationController.viewControllers = [filtersViewController]
+        present(navigationController, animated: true)
     }
 }
 // MARK: - UICollectionViewDataSource
@@ -247,6 +276,23 @@ extension TrackersViewController: UISearchResultsUpdating {
     }
 }
 
+// MARK: - FiltersViewControllerDelegate
+extension TrackersViewController: FiltersViewControllerDelegate {
+    func selectFilter(_ filter: Filter) {
+        selectedFilter = filter
+        viewModel.quickFilter = filter
+        switch filter {
+        case .allTrackers:
+            trackersForSelectedDate()
+        case .todayTrackers:
+            datePicker.date = Date()
+            trackersForSelectedDate()
+        case .completedTrackers, .uncompletedTrackers:
+            return
+        }
+    }
+}
+
 // MARK: - Private routines & layout
 private extension TrackersViewController {
 
@@ -283,6 +329,7 @@ private extension TrackersViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundView = placeholderView
+        collectionView.alwaysBounceVertical = true
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
@@ -296,8 +343,19 @@ private extension TrackersViewController {
         ])
     }
     
+    private func configureFilters() {
+        view.addSubview(filterButton)
+        
+        NSLayoutConstraint.activate([
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -17),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114)
+        ])
+    }
+    
     func togglePlaceholder(search: Bool = false) {
-        let isSearching = viewModel.searchPredicate != ""
+        let isSearching = viewModel.searchPredicate != "" || viewModel.quickFilter != nil && viewModel.quickFilter != .allTrackers
         let placeholderText = isSearching ? NSLocalizedString("trackers.placeholderNotFound", comment: "Text for the placeholder if nothing was found") : NSLocalizedString("trackers.placeholderViewText", comment: "Text for the empty trackers list")
         let placeholderImage = isSearching ? UIImage(named: "EmptySearch") : UIImage(named: "TrackersPlaceholder")
         placeholderView.updateText(placeholderText)
@@ -306,6 +364,12 @@ private extension TrackersViewController {
             collectionView.backgroundView?.isHidden = false
         } else {
             collectionView.backgroundView?.isHidden = true
+        }
+        
+        if !isSearching && viewModel.numberOfSections == 0 {
+            filterButton.isHidden = true
+        } else {
+            filterButton.isHidden = false
         }
     }
     
