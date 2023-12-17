@@ -11,6 +11,12 @@ import XCTest
 
 final class TrackerTests: XCTestCase {
 
+    class MockAnalytics: AnalyticsServiceProtocol {
+        func report(event: AnalyticsEvents, params: [AnyHashable : Any]) {
+            return
+        }
+    }
+    
     func testTrackerViewControllerLight() {
         let trackerStore = TrackerStore()
         let trackerCategoryStore = TrackerCategoryStore()
@@ -24,7 +30,8 @@ final class TrackerTests: XCTestCase {
         
         let trackersViewController = TrackersViewController(
             trackerCategoryStore: trackerCategoryStore,
-            viewModel: trackersViewModel
+            viewModel: trackersViewModel,
+            analyticsService: MockAnalytics()
         )
         assertSnapshot(matching: trackersViewController.view, as: .image(traits: .init(userInterfaceStyle: .light)))
     }
@@ -42,7 +49,8 @@ final class TrackerTests: XCTestCase {
         
         let trackersViewController = TrackersViewController(
             trackerCategoryStore: trackerCategoryStore,
-            viewModel: trackersViewModel
+            viewModel: trackersViewModel,
+            analyticsService: MockAnalytics()
         )
         assertSnapshot(matching: trackersViewController.view, as: .image(traits: .init(userInterfaceStyle: .dark)))
     }

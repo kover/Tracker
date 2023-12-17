@@ -8,9 +8,9 @@
 import Foundation
 
 enum AnalyticsItems: String, CaseIterable {
-    case AddTracker = "add_track"
-    case Record = "track"
-    case Filter = "filter"
-    case Edit = "edit"
-    case Remove = "delete"
+    case addTracker = "add_track"
+    case record = "track"
+    case filter = "filter"
+    case edit = "edit"
+    case remove = "delete"
 }

@@ -47,8 +47,7 @@ final class FiltersTableViewCell: UITableViewCell {
 //MARK: - Private routines
 private extension FiltersTableViewCell {
     func setupSubviews() {
-        contentView.addSubview(nameLabel)
-        contentView.addSubview(checkImageView)
+        [nameLabel, checkImageView].forEach { contentView.addSubview($0) }
     }
     
     func setupLayout() {

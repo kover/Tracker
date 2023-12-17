@@ -8,6 +8,6 @@
 import Foundation
 
 enum AnalyticsParameter: String, CaseIterable {
-    case Screen = "screen"
-    case Item = "item"
+    case screen = "screen"
+    case item = "item"
 }

@@ -8,5 +8,5 @@
 import Foundation
 
 enum AnalyticsScreens: String, CaseIterable {
-    case Main = "Screen"
+    case main = "Screen"
 }

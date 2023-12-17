@@ -8,7 +8,7 @@
 import Foundation
 
 enum AnalyticsEvents: String, CaseIterable {
-    case Open = "open"
-    case Close = "close"
-    case Click = "click"
+    case open = "open"
+    case close = "close"
+    case click = "click"
 }

@@ -11,7 +11,7 @@ protocol FiltersViewControllerDelegate: AnyObject {
     func selectFilter(_ filter: Filter)
 }
 
-class FiltersViewController: UIViewController {
+final class FiltersViewController: UIViewController {
 
     weak var delegate: FiltersViewControllerDelegate?
     var selectedFilter: Filter?

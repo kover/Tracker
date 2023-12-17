@@ -15,10 +15,10 @@ final class TrackersViewController: UIViewController {
     // MARK: - Stores
     private let trackerCategoryStore: TrackerCategoryStoreProtocol
     private let viewModel: TrackersViewModel
-    private let analyticsService: AnalyticsService
-    private var selectedFilter: Filter?
+    private let analyticsService: AnalyticsServiceProtocol
+    private var selectedFilter: Filter = .allTrackers
     
-    init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel, analyticsService: AnalyticsService) {
+    init(trackerCategoryStore: TrackerCategoryStoreProtocol, viewModel: TrackersViewModel, analyticsService: AnalyticsServiceProtocol) {
         self.trackerCategoryStore = trackerCategoryStore
         self.viewModel = viewModel
         self.analyticsService = analyticsService
@@ -74,6 +74,8 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = UIColor(named: "MainBackground")
+        
         configureNavBar()
         configureSearch()
         configureCollection()
@@ -82,17 +84,17 @@ final class TrackersViewController: UIViewController {
         trackersForSelectedDate()
         bind()
         
-        analyticsService.report(event: .Open, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue ])
+        analyticsService.report(event: .open, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue ])
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        analyticsService.report(event: .Close, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue ])
+        analyticsService.report(event: .close, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue ])
     }
     
     @objc func createTracker() {
-        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.AddTracker.rawValue ])
+        analyticsService.report(event: .click, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue, AnalyticsParameter.item.rawValue : AnalyticsItems.addTracker.rawValue ])
         let createTrackerViewController = CreateTrackerViewController(trackerCategoryStore: trackerCategoryStore)
         createTrackerViewController.delegate = self
         let navigationController = UINavigationController()
@@ -106,7 +108,7 @@ final class TrackersViewController: UIViewController {
     
     @objc
     func showFilters() {
-        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Filter.rawValue ])
+        analyticsService.report(event: .click, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue, AnalyticsParameter.item.rawValue : AnalyticsItems.filter.rawValue ])
         
         let filtersViewController = FiltersViewController()
         filtersViewController.delegate = self
@@ -264,7 +266,7 @@ extension TrackersViewController: CreateHabbitViewControllerDelegate {
 // MARK: - TrackersCollectionViewCellDelegate
 extension TrackersViewController: TrackersCollectionViewCellDelegate {
     func updateTrackerRecord(tracker: Tracker, isCompleted: Bool, cell: TrackersCollectionViewCell) {
-        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Record.rawValue ])
+        analyticsService.report(event: .click, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue, AnalyticsParameter.item.rawValue : AnalyticsItems.record.rawValue ])
         viewModel.updateRecordFor(tracker: tracker, at: datePicker.date, withCompletion: isCompleted)
     }
 }
@@ -330,6 +332,7 @@ private extension TrackersViewController {
         collectionView.dataSource = self
         collectionView.backgroundView = placeholderView
         collectionView.alwaysBounceVertical = true
+        collectionView.backgroundColor = UIColor(named: "MainBackground")
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
@@ -422,7 +425,7 @@ private extension TrackersViewController {
     }
     
     func editTracker(_ tracker: Tracker) {
-        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Edit.rawValue ])
+        analyticsService.report(event: .click, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue, AnalyticsParameter.item.rawValue : AnalyticsItems.edit.rawValue ])
         
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
         createHabbitViewController.tracker = tracker
@@ -444,7 +447,7 @@ private extension TrackersViewController {
     }
     
     func removeTracker(_ tracker: Tracker) {
-        analyticsService.report(event: .Click, params: [ AnalyticsParameter.Screen.rawValue : AnalyticsScreens.Main.rawValue, AnalyticsParameter.Item.rawValue : AnalyticsItems.Remove.rawValue ])
+        analyticsService.report(event: .click, params: [ AnalyticsParameter.screen.rawValue : AnalyticsScreens.main.rawValue, AnalyticsParameter.item.rawValue : AnalyticsItems.remove.rawValue ])
         
         let alert = UIAlertController(
             title: NSLocalizedString("trackers.removalConfirmation", comment: "Tracker removal confirmation message"),

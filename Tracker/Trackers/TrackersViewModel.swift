@@ -89,10 +89,6 @@ final class TrackersViewModel {
             category.trackers.contains { $0.id == tracker.id }
         }
     }
-        
-    func trackersFor(date: Date) {
-        
-    }
 }
 // MARK: - Private routines
 private extension TrackersViewModel {
@@ -115,23 +111,9 @@ private extension TrackersViewModel {
             let selectDay = Calendar.current.component(.weekday, from: predicateDate ?? Date())
             let categoryTrackers = category.trackers.filter { tracker in
                 !tracker.pinned
-            }.filter { tracker in
-                tracker.schedule.contains { $0.numberOfDay == selectDay }
-            }.filter { predicateString == "" ? true : $0.name.lowercased().contains(predicateString) }
-                .filter { tracker in
-                    switch (quickFilter) {
-                    case .completedTrackers:
-                        guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate ?? Date())) else {
-                            return true
-                        }
-                        return completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
-                    case .uncompletedTrackers:
-                        let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate ?? Date()))
-                        return !completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
-                    default:
-                        return true
-                    }
-                }
+            }.filter(filterBySelectedDay(selectDay))
+                .filter(filterByPredicateString(predicateString))
+                .filter(filterByQuickFilter(quickFilter, for: predicateDate ?? Date(), with: completedTrackers))
             
             if categoryTrackers.count == 0 {
                 return nil
@@ -166,6 +148,35 @@ extension TrackersViewModel {
     
     func removeTracker(_ tracker: Tracker) {
         trackerStore.removeTracker(tracker)
+    }
+    
+    private func filterBySelectedDay(_ selectedDay: Int) -> (Tracker) -> Bool {
+        return { tracker -> Bool in
+            tracker.schedule.contains { $0.numberOfDay == selectedDay }
+        }
+    }
+    
+    private func filterByPredicateString(_ predicate: String) -> (Tracker) -> Bool {
+        return { tracker -> Bool in
+            predicate == "" ? true : tracker.name.lowercased().contains(predicate)
+        }
+    }
+    
+    private func filterByQuickFilter(_ quickFilter: Filter?, for predicateDate: Date, with completedTrackers: [TrackerRecord]) -> (Tracker) -> Bool {
+        return { tracker -> Bool in
+            switch (quickFilter) {
+            case .completedTrackers:
+                guard let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate)) else {
+                    return true
+                }
+                return completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
+            case .uncompletedTrackers:
+                let date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: predicateDate))
+                return !completedTrackers.contains { $0.tracker.id == tracker.id && $0.date == date }
+            default:
+                return true
+            }
+        }
     }
 
 }

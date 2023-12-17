@@ -21,7 +21,7 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private var selectedDate: Date?
     private var tracker: Tracker?
     
-    var preview: UIView?
+    private(set) var preview: UIView?
     
     // MARK: - Layout items
     private let colorView: UIView = {

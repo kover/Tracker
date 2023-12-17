@@ -8,7 +8,11 @@
 import Foundation
 import YandexMobileMetrica
 
-struct AnalyticsService {
+protocol AnalyticsServiceProtocol {
+    func report(event: AnalyticsEvents, params: [AnyHashable : Any]) -> Void
+}
+
+struct AnalyticsService: AnalyticsServiceProtocol {
     static func activate() {
         guard let configuration = YMMYandexMetricaConfiguration(apiKey: "b470bb7a-8e58-4bbe-a1c7-ef6385619cd7") else { return }
         
