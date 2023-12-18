@@ -27,9 +27,10 @@ final class CreateTrackerViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("createHabbit.button", comment: "The title for the create habbit button"), for: .normal)
         button.addTarget(self, action: #selector(createHabbit), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         
@@ -40,9 +41,10 @@ final class CreateTrackerViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setTitle("Нерегулярное событие", for: .normal)
+        button.setTitle(NSLocalizedString("createIrregularEvent.button", comment: "The title for the create irregular event button"), for: .normal)
         button.addTarget(self, action: #selector(createIrregularEvent), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         
@@ -52,9 +54,9 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - Lifecycle hooks
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Создание трекера"
+        title = NSLocalizedString("createTrackerView.title", comment: "The title for the create tracker view")
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         setupSubviews()
         setupLayout()
@@ -62,7 +64,7 @@ final class CreateTrackerViewController: UIViewController {
 
     @objc func createHabbit() {
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
-        createHabbitViewController.title = "Новая привычка"
+        createHabbitViewController.title = NSLocalizedString("newHabbitView.title", comment: "The title for the new habbit view")
         createHabbitViewController.delegate = delegate
         createHabbitViewController.cells = [
             0: ["textField"],
@@ -80,7 +82,7 @@ final class CreateTrackerViewController: UIViewController {
     
     @objc func createIrregularEvent() {
         let createHabbitViewController = CreateHabbitViewController(trackerCategoryStore: trackerCategoryStore)
-        createHabbitViewController.title = "Новая нерегулярное событие"
+        createHabbitViewController.title = NSLocalizedString("newEventView.title", comment: "The title for the new irregular event view")
         createHabbitViewController.delegate = delegate
         createHabbitViewController.cells = [
             0: ["textField"],

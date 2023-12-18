@@ -42,10 +42,7 @@ final class ListCategoriesViewController: UIViewController {
         
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.text = """
-        Привычки и события можно
-        объединить по смыслу
-        """
+        label.text = NSLocalizedString("emptyCategoriesPlaceholder.text", comment: "Text for the placeholder if no categories defined")
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = UIColor(named: "Black")
         label.textAlignment = .center
@@ -58,10 +55,10 @@ final class ListCategoriesViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("addCategoryButton.title", comment: "Title for the add category button on the categories list and create category screens"), for: .normal)
         button.addTarget(self, action: #selector(addCategory), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         
@@ -75,7 +72,7 @@ final class ListCategoriesViewController: UIViewController {
         tableView.rowHeight = 75
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = UIColor(named: "MainBackground")
         
         return tableView
     }()
@@ -142,9 +139,9 @@ extension ListCategoriesViewController: UITableViewDelegate {
 //MARK: - Private routines & layout
 private extension ListCategoriesViewController {
     func setupSubviews() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
-        navigationItem.title = "Категории"
+        navigationItem.title = NSLocalizedString("categoriesList.title", comment: "Title for the categories list screen")
 
         togglePlaceholderVisibility()
         categoryTableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.categoryTableViewCellIdentifier)

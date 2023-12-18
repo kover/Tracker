@@ -17,6 +17,7 @@ protocol TrackerCategoryStoreProtocol: AnyObject {
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> TrackerCategory?
     func entityFor(category: TrackerCategory) -> TrackerCategoryCoreData?
+    func categoryForTracker(_ tracker: Tracker) -> TrackerCategory?
 }
 
 struct TrackerCategoryStoreUpdate {
@@ -99,7 +100,7 @@ private extension TrackerCategoryStore {
                 return
             }
             
-            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule))
+            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: $0.pinned))
         }
         return trackers
     }
@@ -145,6 +146,18 @@ extension TrackerCategoryStore: TrackerCategoryStoreProtocol {
     
     func entityFor(category: TrackerCategory) -> TrackerCategoryCoreData? {
         fetchedResultsController.fetchedObjects?.first(where: { $0.title == category.title })
+    }
+    
+    func categoryForTracker(_ tracker: Tracker) -> TrackerCategory? {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "ANY trackers.id == %@", tracker.id.uuidString)
+        
+        guard let categories = try? context.fetch(request),
+              let category = categories.first else {
+            return nil
+        }
+    
+        return try? convertFetchedCategory(category)
     }
 }
 // MARK: - NSFetchedResultsControllerDelegate

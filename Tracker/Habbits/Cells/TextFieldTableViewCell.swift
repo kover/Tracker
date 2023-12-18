@@ -21,7 +21,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = NSLocalizedString("createTrackerPlaceholder.text", comment: "Text to be used as a placeholder for tracker name input")
         textField.autocorrectionType = UITextAutocorrectionType.no
         textField.returnKeyType = UIReturnKeyType.done
         textField.clearButtonMode = .whileEditing
@@ -32,11 +32,16 @@ final class TextFieldTableViewCell: UITableViewCell {
     }()
     
     //MARK: - Cell configuration
-    func setupCell() {
+    func setupCell(name: String?) {
         selectionStyle = .none
         
         setupSubviews()
         setupLayout()
+        
+        guard let name = name else {
+            return
+        }
+        nameTextField.text = name
     }
 }
 

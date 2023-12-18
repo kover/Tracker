@@ -38,7 +38,7 @@ private extension OnboardingViewController {
         
         pages.append(OnboardingPage(
             image: UIImage(named: "OnboardingOne"),
-            textLabel: "Отслеживайте только \n то, что хотите"
+            textLabel: NSLocalizedString("firstOnboardingMessage", comment: "Message on the first onboarding screen")
         ))
         
         if let first = pages.first {
@@ -88,7 +88,7 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
         if pages.count < 2 {
             pages.append(OnboardingPage(
                 image: UIImage(named: "OnboardingTwo"),
-                textLabel: "Даже если это \n не литры воды и йога"
+                textLabel: NSLocalizedString("secondOnboardingMessage", comment: "Message on the second onboarding screen")
             ))
         }
         

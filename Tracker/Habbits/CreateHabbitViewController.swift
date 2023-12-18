@@ -15,9 +15,13 @@ protocol CreateHabbitViewControllerDelegate: AnyObject {
         emoji: String,
         color: UIColor
     )
+    func updateTracker(tracker: Tracker, forCategory category: TrackerCategory)
 }
 
 final class CreateHabbitViewController: UIViewController {
+    
+    var tracker: Tracker?
+    var completedDays: Int?
     
     private var category: TrackerCategory?
     private var schedule: [TrackerSchedule]?
@@ -44,7 +48,7 @@ final class CreateHabbitViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.rowHeight = 75
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = UIColor(named: "MainBackground")
         tableView.separatorInset = .init(top: 0, left: 16, bottom: 0, right: 16)
         
         return tableView
@@ -53,14 +57,20 @@ final class CreateHabbitViewController: UIViewController {
     private lazy var createButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle("Создать", for: .normal)
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        if tracker != nil {
+            button.setTitle(NSLocalizedString("saveButton.title", comment: "The title for the save button on create habbit view"), for: .normal)
+            button.addTarget(self, action: #selector(save), for: .touchUpInside)
+        } else {
+            button.setTitle(NSLocalizedString("createButton.title", comment: "The title for the create button on create habbit view"), for: .normal)
+            button.addTarget(self, action: #selector(create), for: .touchUpInside)
+        }
+        
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "Gray")
         button.isEnabled = false
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(create), for: .touchUpInside)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -70,7 +80,7 @@ final class CreateHabbitViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(NSLocalizedString("cancelButton.title", comment: "The title for the cancel button on create habbit view"), for: .normal)
         button.setTitleColor(UIColor(named: "Red"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor.clear
@@ -85,12 +95,24 @@ final class CreateHabbitViewController: UIViewController {
         return button
     }()
     
+    private lazy var daysCountLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let localizedFormatString = NSLocalizedString("daysTracked", comment: "")
+        label.text = String(format: localizedFormatString, completedDays ?? 0)
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.textColor = UIColor(named: "Black")
+        
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupView()
         fillSheduleIfRequired()
-
+        setupEdit()
     }
 
     @objc func create() {
@@ -110,6 +132,30 @@ final class CreateHabbitViewController: UIViewController {
                 return
             }
             rootViewController.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @objc func save() {
+        if
+            let id = tracker?.id,
+            let category = category,
+            let schedule = schedule,
+            let name = name,
+            let color = color,
+            let emoji = emoji,
+            let delegate = delegate,
+            let pinned = tracker?.pinned
+        {
+            
+            let updatedTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: pinned)
+            delegate.updateTracker(tracker: updatedTracker, forCategory: category)
+            
+            guard let window = UIApplication.shared.windows.first,
+                  let rootViewController = window.rootViewController else {
+                assertionFailure("Invalid configuration")
+                return
+            }
+            rootViewController.dismiss(animated: true)
         }
     }
     
@@ -151,7 +197,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(name: name)
             
             return cell
         } else if indexPath.section == 1 {
@@ -166,10 +212,10 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
 
             if indexPath.row == 0 {
-                text = "Категория"
+                text = NSLocalizedString("categorySection.name", comment: "Name for the category section on create habbit screen")
                 description = category?.title
             } else {
-                text = "Расписание"
+                text = NSLocalizedString("scheduleSection.name", comment: "Name for the schedule section on create habbit screen")
                 description = scheduleToString() ?? ""
             }
             
@@ -186,7 +232,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
                 
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(selectedEmoji: emoji)
             
             return cell
         } else {
@@ -199,7 +245,7 @@ extension CreateHabbitViewController: UITableViewDataSource {
             }
             
             cell.delegate = self
-            cell.setupCell()
+            cell.setupCell(selectedColor: color)
             
             return cell
         }
@@ -263,18 +309,45 @@ extension CreateHabbitViewController: ColorsTableViewCellDelegate {
 
 //MARK: - Private declarations & layout
 private extension CreateHabbitViewController {
+    func setupEdit() {
+        guard let tracker = tracker,
+              let category = trackerCategoryStore.categoryForTracker(tracker)
+        else {
+            return
+        }
+        name = tracker.name
+        schedule = tracker.schedule
+        color = tracker.color
+        emoji = tracker.emoji
+        self.category = category
+
+        updateCreateButton()
+    }
+    
     func setupSubviews() {
+        if tracker != nil {
+            view.addSubview(daysCountLabel)
+        }
         view.addSubview(tableView)
         view.addSubview(cancelButton)
         view.addSubview(createButton)
     }
     
     func setupLayout() {
+        let isEditingTracker = tracker != nil
+        
+        if isEditingTracker {
+            NSLayoutConstraint.activate([
+                daysCountLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                daysCountLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            ])
+        }
+        
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: cancelButton.topAnchor, constant: -16),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
+            tableView.topAnchor.constraint(equalTo: isEditingTracker ? daysCountLabel.bottomAnchor : view.topAnchor, constant: 24),
             
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -289,7 +362,7 @@ private extension CreateHabbitViewController {
     }
     
     func setupView() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         tableView.register(TextFieldTableViewCell.self, forCellReuseIdentifier: TextFieldTableViewCell.textFieldTableViewCellIdentifier)
         tableView.register(HabbitSetupTableViewCell.self, forCellReuseIdentifier: HabbitSetupTableViewCell.habbitSetupTableViewCellIdentifier)
@@ -368,7 +441,7 @@ private extension CreateHabbitViewController {
         
         var stringResult = ""
         if arr.count == 7 {
-            stringResult = "Каждый день"
+            stringResult = NSLocalizedString("schedule.everyDay", comment: "String to be used when all items on the schedule screen are selected")
         } else {
             let filter = arr.map { $0.shortDayName }
             stringResult = filter.joined(separator: ", ")

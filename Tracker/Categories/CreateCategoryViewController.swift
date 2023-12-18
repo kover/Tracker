@@ -24,7 +24,7 @@ final class CreateCategoryViewController: UIViewController {
         textField.leftView = paddingView
         textField.leftViewMode = .always
         textField.autocorrectionType = UITextAutocorrectionType.no
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = NSLocalizedString("newCategoryNamePlaceholder.text", comment: "Placeholder text for the category name input")
         textField.backgroundColor = UIColor(named: "Background")
         textField.layer.cornerRadius = 16
         textField.clearButtonMode = .whileEditing
@@ -37,10 +37,10 @@ final class CreateCategoryViewController: UIViewController {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(NSLocalizedString("addCategoryButton.title", comment: "Title for the add category button on the categories list and create category screens"), for: .normal)
         button.addTarget(self, action: #selector(done), for: .touchUpInside)
         button.backgroundColor = UIColor(named: "Gray")
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(UIColor(named: "InvertedBlack"), for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
         button.isEnabled = false
@@ -52,9 +52,9 @@ final class CreateCategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "Новая категория"
+        navigationItem.title = NSLocalizedString("newCategoryView.title", comment: "Title for the create category screen")
         
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = UIColor(named: "MainBackground")
         
         setupSubviews()
         setupLayout()

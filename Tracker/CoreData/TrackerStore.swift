@@ -14,10 +14,13 @@ protocol TrackerStoreProtocol: AnyObject {
     var selectedDate: Date? { get set }
     var searchPredicate: String? { get set }
     func addTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
+    func updateTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData)
+    func removeTracker(_ tracker: Tracker)
     func numberOfRowsInSection(_ section: Int) -> Int
     func object(at: IndexPath) -> Tracker?
     func titleForSection(at indexPath: IndexPath) -> String
     func getEntityFor(tracker: Tracker) -> TrackerCoreData?
+    func getTrackers() -> [Tracker]
 }
 
 struct TrackerStoreUpdate {
@@ -91,6 +94,7 @@ final class TrackerStore: NSObject {
         entity.schedule = NSArray(array: tracker.schedule)
         entity.scheduleString = tracker.schedule.compactMap { String($0.numberOfDay) }.joined(separator: ",")
         entity.category = category
+        entity.pinned = tracker.pinned
         saveContext()
     }
 }
@@ -109,7 +113,7 @@ private extension TrackerStore {
                 return
             }
             
-            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule))
+            trackers.append(Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: $0.pinned))
         }
         return trackers
     }
@@ -125,6 +129,16 @@ private extension TrackerStore {
 }
 // MARK: - TrackerStoreProtocol
 extension TrackerStore: TrackerStoreProtocol {
+    
+    func getTrackers() -> [Tracker] {
+        guard
+            let objects = fetchedResultsController.fetchedObjects
+        else {
+            return []
+        }
+        
+        return self.convertFetchedTrackers(objects)
+    }
     
     var selectedDate: Date? {
         set {
@@ -167,6 +181,21 @@ extension TrackerStore: TrackerStoreProtocol {
         updateTrackerEntity(entity, with: tracker, for: category)
     }
     
+    func updateTracker(_ tracker: Tracker, for category: TrackerCategoryCoreData) {
+        guard let entity = fetchedResultsController.fetchedObjects?.first(where: { $0.id == tracker.id }) else {
+            return
+        }
+        updateTrackerEntity(entity, with: tracker, for: category)
+    }
+    
+    func removeTracker(_ tracker: Tracker) {
+        guard let entity = fetchedResultsController.fetchedObjects?.first(where: { $0.id == tracker.id }) else {
+            return
+        }
+        context.delete(entity)
+        saveContext()
+    }
+    
     var numberOfSections: Int {
         return fetchedResultsController.sections?.count ?? 1
     }
@@ -187,7 +216,7 @@ extension TrackerStore: TrackerStoreProtocol {
             return nil
         }
         
-        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule)
+        return Tracker(id: id, name: name, color: color, emoji: emoji, schedule: schedule, pinned: tracker.pinned)
     }
     
     func titleForSection(at indexPath: IndexPath) -> String {

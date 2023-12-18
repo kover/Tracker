@@ -21,6 +21,8 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
     private var selectedDate: Date?
     private var tracker: Tracker?
     
+    private(set) var preview: UIView?
+    
     // MARK: - Layout items
     private let colorView: UIView = {
         let view = UIView()
@@ -30,7 +32,6 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
     
-        
         return view
     }()
     
@@ -87,12 +88,24 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    private lazy var pinImageView: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        
+        image.image = UIImage(named: "Pin")
+        image.isHidden = false
+        
+        return image
+    }()
+    
     // MARK: - Lifecycle hooks
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupSubviews()
         setupLayout()
+        
+        preview = colorView
         
         checkTrackerButton.addTarget(self, action: #selector(checkButtonTap), for: .touchUpInside)
     }
@@ -107,9 +120,11 @@ final class TrackersCollectionViewCell: UICollectionViewCell {
         checkTrackerButton.backgroundColor = tracker.color
         titleLabel.text = tracker.name
         emojiLabel.text = tracker.emoji
-        quantityLabel.text = setQuantityLabel(count: counter)
+        let localizedFormatString = NSLocalizedString("daysTracked", comment: "")
+        quantityLabel.text = String(format: localizedFormatString, counter)
         isCompleted = completed
         self.selectedDate = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month, .day], from: selectedDate))
+        pinImageView.isHidden = !tracker.pinned
         
         updateCheckTrackerButton()
     }
@@ -128,6 +143,7 @@ private extension TrackersCollectionViewCell {
         emojiWrapper.addSubview(emojiLabel)
         colorView.addSubview(emojiWrapper)
         colorView.addSubview(titleLabel)
+        colorView.addSubview(pinImageView)
         
         contentView.addSubview(colorView)
         contentView.addSubview(checkTrackerButton)
@@ -143,6 +159,11 @@ private extension TrackersCollectionViewCell {
             
             emojiLabel.centerXAnchor.constraint(equalTo: emojiWrapper.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiWrapper.centerYAnchor),
+            
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinImageView.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: -4),
             
             emojiWrapper.topAnchor.constraint(equalTo: colorView.topAnchor, constant: 12),
             emojiWrapper.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: 12),
@@ -182,24 +203,7 @@ private extension TrackersCollectionViewCell {
         updateCheckTrackerButton()
         delegate?.updateTrackerRecord(tracker: tracker, isCompleted: isCompleted, cell: self)
     }
-    
-    func setQuantityLabel(count: Int) -> String {
-        var dayString: String!
-        if "1".contains("\(count % 10)") {
-            dayString = "день"
-        }
-        if "234".contains("\(count % 10)") {
-            dayString = "дня"
-        }
-        if "567890".contains("\(count % 10)") {
-            dayString = "дней"
-        }
-        if 11...14 ~= count % 100 {
-            dayString = "дней"
-        }
-        return "\(count) " + dayString
-    }
-    
+        
     func updateCheckTrackerButton() {
         if isCompleted {
             checkTrackerButton.alpha = 0.5

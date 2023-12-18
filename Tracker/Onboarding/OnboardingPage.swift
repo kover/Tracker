@@ -22,9 +22,10 @@ final class OnboardingPage: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.text = "Отслеживайте только \n то, что хотите"
+        label.text = NSLocalizedString("firstOnboardingMessage", comment: "Message on the first onboarding screen")
         label.font = .systemFont(ofSize: 32, weight: .bold)
         label.textColor = UIColor(named: "Black")
+        label.adjustsFontSizeToFitWidth = true
         label.textAlignment = .center
         label.numberOfLines = 2
         
@@ -38,7 +39,7 @@ final class OnboardingPage: UIViewController {
         
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(named: "Black")
-        button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitle(NSLocalizedString("onboardingButton", comment: "Text for the onboarding screen button"), for: .normal)
         button.titleLabel?.textColor = UIColor(named: "White")
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(buttonTap), for: .touchUpInside)
