@@ -130,6 +130,12 @@
 		03C15B252AFE187A005829E4 /* ListCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCategoriesViewController.swift; sourceTree = "<group>"; };
 		03D5D5B72B18DC46006F1DD9 /* UIColorValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorValueTransformer.swift; sourceTree = "<group>"; };
 		03F1FB4E2B2F88E800E43466 /* RocketSim_Recording_iPhone_15_Pro_6.1_2023-12-18_00.18.31.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RocketSim_Recording_iPhone_15_Pro_6.1_2023-12-18_00.18.31.mp4"; sourceTree = "<group>"; };
+		03F1FB4F2B2FF21900E43466 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		03F1FB502B2FF21900E43466 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-US"; path = "en-US.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		03F1FB512B2FF21900E43466 /* en-US */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "en-US"; path = "en-US.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
+		03F1FB522B2FF25100E43466 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		03F1FB532B2FF25100E43466 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-GB"; path = "en-GB.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		03F1FB542B2FF25100E43466 /* en-GB */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = "en-GB"; path = "en-GB.lproj/Localizable.stringsdict"; sourceTree = "<group>"; };
 		03F2417B2AB45275008F4D44 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
 		03F2417D2AB594C6008F4D44 /* TrackersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersCollectionViewCell.swift; sourceTree = "<group>"; };
 		03F33F5D2AB422BC00761E07 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
@@ -492,6 +498,8 @@
 				en,
 				Base,
 				ru,
+				"en-US",
+				"en-GB",
 			);
 			mainGroup = 0338A4162A9E006000C1DD27;
 			packageReferences = (
@@ -671,6 +679,8 @@
 			children = (
 				03115D9C2B29ADE500847E2B /* ru */,
 				03115D9E2B29ADE700847E2B /* en */,
+				03F1FB502B2FF21900E43466 /* en-US */,
+				03F1FB532B2FF25100E43466 /* en-GB */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -680,6 +690,8 @@
 			children = (
 				03115DA02B29ADEC00847E2B /* en */,
 				03115DA22B29ADED00847E2B /* ru */,
+				03F1FB512B2FF21900E43466 /* en-US */,
+				03F1FB542B2FF25100E43466 /* en-GB */,
 			);
 			name = Localizable.stringsdict;
 			sourceTree = "<group>";
@@ -689,6 +701,8 @@
 			children = (
 				0338A42E2A9E006100C1DD27 /* Base */,
 				03115D9A2B29ADD500847E2B /* ru */,
+				03F1FB4F2B2FF21900E43466 /* en-US */,
+				03F1FB522B2FF25100E43466 /* en-GB */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
